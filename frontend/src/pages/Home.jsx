@@ -1,33 +1,15 @@
-import Navbar from "../Navbar/Navbar"
-import Hero from "../Hero/Hero"
-import Category from "../Category/Category"
-import Products from "../Products/Products"
+import Navbar from "../Navbar/Navbar";
+import Hero from "../Hero/Hero";
+import Category from "../Category/Category";
+import Products from "../Products/Products";
 
 export const Home = () => {
-    return (
-        <div>
-            <Navbar />
-            <Hero />
-            <Category />
-            <Products />
-        </div>
-    )
-}
-
-import Navbar from "../Navbar/Navbar"
-import Hero from "../Hero/Hero"
-import Category from "../Category/Category"
-import Products from "../Products/Products"
-
-const Home = () => {
   return (
     <div>
       <Navbar />
-      <Hero/>
+      <Hero />
       <Category />
       <Products />
     </div>
-  )
-}
-
-export default Home
+  );
+};

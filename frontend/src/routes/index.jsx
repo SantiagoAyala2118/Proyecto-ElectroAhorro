@@ -6,7 +6,7 @@ import { Home } from "../pages/Home.jsx";
 
 // Se hace una constante router en donde se guardan todas las direcciones para ir navegando por los componentes
 export const router = createBrowserRouter([
-    { path: "/", element: <Registro /> },
-    { path: "/login", element: <Login /> },
-    { path: "/app", element: <Home /> },
+  { path: "/", element: <Registro /> },
+  { path: "/login", element: <Login /> },
+  { path: "/app", element: <Home /> },
 ]);

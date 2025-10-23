@@ -2,7 +2,8 @@
 @tailwind components;
 @tailwind utilities;
 
-/* personalizaciones o @theme / @config si las querés usar */
-body {
-  @apply bg-blue-950;
+@layer base {
+  body {
+    /* @apply bg-blue-950; */
+  }
 }

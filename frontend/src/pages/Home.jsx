@@ -1,15 +1,15 @@
-import Navbar from "../Navbar/Navbar";
-import Hero from "../Hero/Hero";
-import Category from "../Category/Category";
-import Products from "../Products/Products";
+import { Navbar } from "../components/layouts/NavBar";
+import { Hero } from "../components/layouts/Hero";
+import { Category } from "../components/layouts/Category";
+import { Products } from "../components/layouts/Products";
 
 export const Home = () => {
   return (
-    <div>
+    <>
       <Navbar />
       <Hero />
       <Category />
       <Products />
-    </div>
+    </>
   );
 };

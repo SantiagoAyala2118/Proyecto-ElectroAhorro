@@ -1,9 +1,9 @@
 import { useState, useEffect } from "react";
-import img1 from "../../assets/concientizacion1.jpg";
-import img2 from "../../assets/concientizacion2.jpg";
-import img3 from "../../assets/concientizacion3.jpg";
-import img4 from "../../assets/concientizacion4.jpg";
-import img5 from "../../assets/concientizacion5.jpg";
+import img1 from "../../assets/images/concientizacion1.jpg";
+import img2 from "../../assets/images/concientizacion2.jpg";
+import img3 from "../../assets/images/concientizacion3.jpg";
+import img4 from "../../assets/images/concientizacion4.jpg";
+import img5 from "../../assets/images/concientizacion5.jpg";
 
 const slides = [
   {

@@ -1,10 +1,10 @@
-import Heading from "../Heading/Heading";
-import CategoriaCocina from "../../assets/categoria-cocina.jpg";
-import CategoriaComedor from "../../assets/categoria-comedor.jpg";
-import CategoriaBathtoom from "../../assets/categoria-Bathtoom.jpg";
-import CategoriaDormitorio from "../../assets/categoria-dormitorio.jpg";
-import CategoriaLiving from "../../assets/categoria-living.jpg";
-import CategoriaPatio from "../../assets/categoria-patio.jpg";
+import { Heading } from "./Heading";
+import CategoriaCocina from "../../assets/images/categoria-cocina.jpg";
+import CategoriaComedor from "../../assets/images/categoria-comedor.jpg";
+import CategoriaBathtoom from "../../assets/images/categoria-Bathtoom.jpg";
+import CategoriaDormitorio from "../../assets/images/categoria-dormitorio.jpg";
+import CategoriaLiving from "../../assets/images/categoria-living.jpg";
+import CategoriaPatio from "../../assets/images/categoria-patio.jpg";
 import { Button } from "../common/Button";
 
 // tu array de elementos siempre va arriba de todo

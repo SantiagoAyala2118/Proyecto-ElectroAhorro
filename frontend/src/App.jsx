@@ -1,6 +1,6 @@
 import "./App.css";
-import Home from "./components/pages/Home.jsx";
-import Hero from "./components/Hero/Hero.jsx";
+import { Home } from "./pages/Home.jsx";
+import { Hero } from "./components/layouts/Hero.jsx";
 
 export const App = () => {
   return (

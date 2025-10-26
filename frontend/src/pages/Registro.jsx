@@ -3,17 +3,15 @@ import { useNavigate, Link } from "react-router-dom";
 
 export const Registro = () => {
     const navigate = useNavigate();
-
     const {
         register,
         handleSubmit,
         formState: { errors },
-        watch // Agregado para validar confirmación de password
+        watch
     } = useForm();
 
     const onSubmit = async (data) => {
         console.log(data);
-
         try {
             const response = await fetch("http://localhost:4000/api/auth/register", {
                 method: "POST",
@@ -35,159 +33,103 @@ export const Registro = () => {
         }
     };
 
-    // Para validar que las contraseñas coincidan
     const password = watch("password");
 
     return (
-        <div
-            className="min-h-screen bg-cover bg-center flex items-center justify-center"
-            style={{ backgroundImage: "url(/fondo-login.jpg)" }}
+        <div 
+            className="min-h-screen w-screen bg-cover bg-center flex items-center justify-center p-0 m-0 fixed inset-0 overflow-hidden"
+            style={{ 
+                backgroundImage: "url(/fondo-login.jpg)",
+                backgroundSize: "cover",
+                backgroundPosition: "center",
+                backgroundRepeat: "no-repeat"
+            }}
         >
-            <div className="bg-blue-800/50 rounded-2xl border-2 border-solid border-lime-300 shadow-xl px-7 py-3 w-100 max-w-md mt-2">
-                {/* Título y Descripción */}
-                <div className="text-center mb-8">
-                    <h1 className="text-3xl font-bold text-lime-300 mb-2">
-                        ElectroAhorro
-                    </h1>
-                    <p className="text-white">
-                        Crea tu cuenta para gestionar tu consumo eléctrico
-                    </p>
+            <div className="w-full max-w-md bg-blue-800/50 border-2 border-lime-300 rounded-2xl shadow-xl px-6 py-6 mx-auto">
+                <div className="text-center mb-6">
+                    <h1 className="text-3xl font-bold text-lime-300 mb-2">ElectroAhorro</h1>
+                    <p className="text-white">Crea tu cuenta para gestionar tu consumo eléctrico</p>
                 </div>
 
-                {/* Formulario de Registro */}
-                <form onSubmit={handleSubmit(onSubmit)} className="space-y-6">
-                    {/* Nombre Completo */}
+                <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
                     <div>
-                        <label className="block text-sm font-medium text-lime-300 mb-2">
-                            Nombre completo
-                        </label>
+                        <label className="block text-sm font-medium text-lime-300 mb-1">Nombre completo</label>
                         <input
                             type="text"
                             placeholder="Introduce tu nombre completo"
-                            className="w-full px-4 py-3 border border-lime-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-colors text-white bg-transparent"
-                            {...register("full_name", {
-                                required: "Este campo es obligatorio",
-                            })}
+                            className="w-full px-3 py-2 border border-lime-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent text-white bg-transparent"
+                            {...register("full_name", { required: "Este campo es obligatorio" })}
                         />
-                        {errors.full_name && (
-                            <p className="text-red-500 text-sm mt-1">
-                                {errors.full_name.message}
-                            </p>
-                        )}
+                        {errors.full_name && <p className="text-red-500 text-xs mt-1">{errors.full_name.message}</p>}
                     </div>
 
-                    {/* Email */}
                     <div>
-                        <label className="block text-sm font-medium text-lime-300 mb-2">
-                            Email
-                        </label>
+                        <label className="block text-sm font-medium text-lime-300 mb-1">Email</label>
                         <input
                             type="email"
                             placeholder="Introduce tu email"
-                            className="w-full px-4 py-3 border border-lime-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-colors text-white bg-transparent"
+                            className="w-full px-3 py-2 border border-lime-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent text-white bg-transparent"
                             {...register("email", {
                                 required: "Este campo es obligatorio",
-                                pattern: {
-                                    value: /^\S+@\S+$/i,
-                                    message: "Email no válido"
-                                }
+                                pattern: { value: /^\S+@\S+$/i, message: "Email no válido" }
                             })}
                         />
-                        {errors.email && (
-                            <p className="text-red-500 text-sm mt-1">
-                                {errors.email.message}
-                            </p>
-                        )}
+                        {errors.email && <p className="text-red-500 text-xs mt-1">{errors.email.message}</p>}
                     </div>
 
-                    {/* Contraseña */}
                     <div>
-                        <label className="block text-sm font-medium text-lime-300 mb-2">
-                            Contraseña
-                        </label>
+                        <label className="block text-sm font-medium text-lime-300 mb-1">Contraseña</label>
                         <input
                             type="password"
                             placeholder="Crea tu contraseña"
-                            className="w-full px-4 py-3 border border-lime-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-colors text-white bg-transparent"
+                            className="w-full px-3 py-2 border border-lime-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent text-white bg-transparent"
                             {...register("password", {
                                 required: "Este campo es obligatorio",
-                                minLength: {
-                                    value: 6,
-                                    message: "La contraseña debe tener al menos 6 caracteres"
-                                }
+                                minLength: { value: 6, message: "La contraseña debe tener al menos 6 caracteres" }
                             })}
                         />
-                        {errors.password && (
-                            <p className="text-red-500 text-sm mt-1">
-                                {errors.password.message}
-                            </p>
-                        )}
+                        {errors.password && <p className="text-red-500 text-xs mt-1">{errors.password.message}</p>}
                     </div>
 
-                    {/* Confirmar Contraseña */}
                     <div>
-                        <label className="block text-sm font-medium text-lime-300 mb-2">
-                            Confirmar Contraseña
-                        </label>
+                        <label className="block text-sm font-medium text-lime-300 mb-1">Confirmar Contraseña</label>
                         <input
                             type="password"
                             placeholder="Confirma tu contraseña"
-                            className="w-full px-4 py-3 border border-lime-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-colors text-white bg-transparent"
+                            className="w-full px-3 py-2 border border-lime-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent text-white bg-transparent"
                             {...register("confirmPassword", {
                                 required: "Este campo es obligatorio",
-                                validate: value =>
-                                    value === password || "Las contraseñas no coinciden"
+                                validate: value => value === password || "Las contraseñas no coinciden"
                             })}
                         />
-                        {errors.confirmPassword && (
-                            <p className="text-red-500 text-sm mt-1">
-                                {errors.confirmPassword.message}
-                            </p>
-                        )}
+                        {errors.confirmPassword && <p className="text-red-500 text-xs mt-1">{errors.confirmPassword.message}</p>}
                     </div>
 
-                    {/* Términos y Condiciones */}
                     <div className="flex items-center">
                         <input
                             type="checkbox"
                             id="terms"
                             className="h-4 w-4 text-blue-600 focus:ring-blue-500 border-gray-300 rounded"
-                            {...register("terms", {
-                                required: "Debes aceptar los términos y condiciones"
-                            })}
+                            {...register("terms", { required: "Debes aceptar los términos y condiciones" })}
                         />
-                        <label htmlFor="terms" className="ml-2 block text-sm text-white">
-                            Acepto los términos y condiciones
-                        </label>
+                        <label htmlFor="terms" className="ml-2 block text-sm text-white">Acepto los términos y condiciones</label>
                     </div>
-                    {errors.terms && (
-                        <p className="text-red-500 text-sm mt-1">
-                            {errors.terms.message}
-                        </p>
-                    )}
+                    {errors.terms && <p className="text-red-500 text-xs mt-1">{errors.terms.message}</p>}
 
                     <button
                         type="submit"
-                        className="w-full bg-blue-600 hover:bg-blue-700 text-lime-300 font-semibold py-3 px-4 rounded-lg transition-colors duration-100 transform hover:scale-105 hover:bg-lime-400 hover:text-blue-900"
+                        className="w-full bg-blue-600 hover:bg-blue-700 text-lime-300 font-semibold py-2 px-4 rounded-lg transition-colors duration-200 hover:bg-lime-400 hover:text-blue-900"
                     >
                         Crear cuenta
                     </button>
                 </form>
 
-                <div className="text-center mt-6">
+                <div className="text-center mt-4">
                     <p className="text-white text-sm">
-                        ¿Ya tienes una cuenta?
-                        <Link
-                            to="/login"
-                            className="text-green-500 underline hover:text-lime-300 font-semibold ml-1"
-                        >
+                        ¿Ya tienes una cuenta?{" "}
+                        <Link to="/login" className="text-green-500 underline hover:text-lime-300 font-semibold">
                             Inicia sesión
                         </Link>
-                    </p>
-                </div>
-                <div className="text-center mt-8 pt-6 border-t border-gray-200">
-                    <p className="text-white text-sm">
-                        © 2025 ElectroAhorro. Todos los derechos reservados.
                     </p>
                 </div>
             </div>

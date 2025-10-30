@@ -5,7 +5,9 @@
 @import "tailwindcss";
 
 /* Eliminar márgenes y padding globales */
-html, body, #root {
+html,
+body,
+#root {
   margin: 0 !important;
   padding: 0 !important;
   width: 100%;

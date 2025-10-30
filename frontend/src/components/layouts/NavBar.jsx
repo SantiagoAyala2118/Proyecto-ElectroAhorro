@@ -12,6 +12,22 @@ export const Navbar = () => {
     navigate("/calculator");
   };
 
+  const handleGoToHome = () => {
+    navigate("/home");
+  };
+
+  const handleGoToProducts = () => {
+    navigate("/user/products");
+  };
+
+  const handleGoToProfile = () => {
+    navigate("/user/profile");
+  };
+
+  const handleGoToSave = () => {
+    navigate("/save");
+  };
+
   return (
     <header className="bg-blue-950 text-white fixed top-0 right-0 left-0 z-50">
       <nav className="max-w-[1400px] max-auto px-10 h-[14vh] flex justify-between items-center bg-blue-950">
@@ -23,7 +39,7 @@ export const Navbar = () => {
         <ul className="md:flex items-center gap-x-15 hidden">
           <li>
             <a
-              href="#"
+              onClick={handleGoToHome}
               className="font-semibold tracking-wider text-lime-400 hover:text-white"
             >
               Inicio
@@ -31,7 +47,7 @@ export const Navbar = () => {
           </li>
           <li>
             <a
-              href="#"
+              onClick={handleGoToProducts}
               className="font-semibold tracking-wider text-white hover:text-lime-400"
             >
               Productos
@@ -39,13 +55,13 @@ export const Navbar = () => {
           </li>
           <li>
             <a
-              href="#"
+              onClick={handleGoToSave}
               className="font-semibold tracking-wider text-white hover:text-lime-400"
             >
               Ahorro
             </a>
           </li>
-          <li >
+          <li>
             <a
               onClick={handleGoToCalculator}
               className="font-semibold tracking-wider text-white hover:text-lime-400 cursor-pointer"
@@ -55,7 +71,7 @@ export const Navbar = () => {
           </li>
           <li>
             <a
-              href="#"
+              onClick={handleGoToProfile}
               className="font-semibold tracking-wider text-white hover:text-lime-400"
             >
               Perfil

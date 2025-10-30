@@ -40,7 +40,7 @@ export const Navbar = () => {
           <li>
             <a
               onClick={handleGoToHome}
-              className="font-semibold tracking-wider text-lime-400 hover:text-white"
+              className="cursor-pointer font-semibold tracking-wider text-lime-400 hover:text-white"
             >
               Inicio
             </a>
@@ -48,7 +48,7 @@ export const Navbar = () => {
           <li>
             <a
               onClick={handleGoToProducts}
-              className="font-semibold tracking-wider text-white hover:text-lime-400"
+              className="cursor-pointer font-semibold tracking-wider text-white hover:text-lime-400"
             >
               Productos
             </a>
@@ -56,7 +56,7 @@ export const Navbar = () => {
           <li>
             <a
               onClick={handleGoToSave}
-              className="font-semibold tracking-wider text-white hover:text-lime-400"
+              className="cursor-pointer font-semibold tracking-wider text-white hover:text-lime-400"
             >
               Ahorro
             </a>
@@ -64,7 +64,7 @@ export const Navbar = () => {
           <li>
             <a
               onClick={handleGoToCalculator}
-              className="font-semibold tracking-wider text-white hover:text-lime-400 cursor-pointer"
+              className="cursor-pointer font-semibold tracking-wider text-white hover:text-lime-400 cursor-pointer"
             >
               Calculadora
             </a>
@@ -72,7 +72,7 @@ export const Navbar = () => {
           <li>
             <a
               onClick={handleGoToProfile}
-              className="font-semibold tracking-wider text-white hover:text-lime-400"
+              className="cursor-pointer font-semibold tracking-wider text-white hover:text-lime-400"
             >
               Perfil
             </a>

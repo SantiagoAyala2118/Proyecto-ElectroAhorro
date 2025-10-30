@@ -173,6 +173,12 @@ export const Registro = () => {
             >
               Inicia sesión
             </Link>
+            <Link
+              to="/calculator"
+              className="text-green-500 underline hover:text-lime-300 font-semibold"
+            >
+              Calculadora
+            </Link>
           </p>
         </div>
       </div>

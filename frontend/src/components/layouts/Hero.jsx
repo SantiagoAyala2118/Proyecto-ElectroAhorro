@@ -56,15 +56,14 @@ export const Hero = () => {
     );
 
   return (
-    <section className="relative w-full h-[500px] overflow-hidden mt-20">
+    <section className="relative w-full h-[500px] overflow-hidden mt-20 min-w-full">
       {/* Slides */}
       <div className="w-full h-full relative">
         {slides.map((slide, index) => (
           <div
             key={index}
-            className={`absolute inset-0 transition-opacity duration-1000 ease-in-out ${
-              index === currentSlide ? "opacity-100" : "opacity-0"
-            }`}
+            className={`absolute inset-0 transition-opacity duration-1000 ease-in-out ${index === currentSlide ? "opacity-100" : "opacity-0"
+              }`}
           >
             <img
               src={slide.image}
@@ -110,9 +109,8 @@ export const Hero = () => {
           <button
             key={index}
             onClick={() => goToSlide(index)}
-            className={`w-3 h-3 rounded-full transition ${
-              index === currentSlide ? "bg-white" : "bg-gray-400"
-            }`}
+            className={`w-3 h-3 rounded-full transition ${index === currentSlide ? "bg-white" : "bg-gray-400"
+              }`}
           />
         ))}
       </div>

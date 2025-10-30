@@ -48,10 +48,6 @@ export const Registro = () => {
             <div className="w-full max-w-md bg-blue-800/50 border-2 border-lime-300 rounded-2xl shadow-xl px-6 py-6 mx-auto">
                 <div className="text-center mb-6">
                     <h1 className="text-3xl font-bold text-lime-300 mb-2">ElectroAhorro</h1>
-                    <div className="bg-red-500 p-4 text-white">
-
-                        Test Tailwind - Esto debería ser rojo
-                    </div>
                     <p className="text-white">Crea tu cuenta para gestionar tu consumo eléctrico</p>
                 </div>
 

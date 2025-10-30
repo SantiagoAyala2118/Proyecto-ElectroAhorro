@@ -45,10 +45,10 @@ export const Navbar = () => {
               Ahorro
             </a>
           </li>
-          <li>
+          <li >
             <a
               onClick={handleGoToCalculator}
-              className="font-semibold tracking-wider text-white hover:text-lime-400"
+              className="font-semibold tracking-wider text-white hover:text-lime-400 cursor-pointer"
             >
               Calculadora
             </a>
@@ -66,7 +66,7 @@ export const Navbar = () => {
         {/* nav action*/}
         <div className="flex items-center gap-x-5">
           {/*Input field*/}
-          <div className="flex p-1 border-2 border-lime-400 rounded-full">
+          <div className="flex p-1 border-2 border-lime-400 rounded-full ">
             <input
               type="text"
               name="text"

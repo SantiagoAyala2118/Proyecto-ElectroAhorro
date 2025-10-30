@@ -4,7 +4,7 @@ import { Hero } from "./components/layouts/Hero.jsx";
 
 export const App = () => {
   return (
-    <div>
+    <div className="min-w-full">
       <Home />
       <Hero />
     </div>

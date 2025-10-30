@@ -39,8 +39,13 @@ export const Login = () => {
 
   return (
     <div
-      className="min-h-screen bg-cover bg-center flex items-center justify-center"
-      style={{ backgroundImage: "url(/fondo-login.jpg)" }}
+      className="min-h-screen w-screen bg-cover bg-center flex items-center justify-center p-0 m-0 fixed inset-0 overflow-hidden"
+      style={{
+        backgroundImage: "url(/fondo-login.jpg)",
+        backgroundSize: "cover",
+        backgroundPosition: "center",
+        backgroundRepeat: "no-repeat"
+      }}
     >
       <div className="bg-blue-800/50 rounded-2xl border-2 border-solid border-lime-300 shadow-xl px-7 py-3 w-100 max-w-md mt-2">
         <div className="p-4">

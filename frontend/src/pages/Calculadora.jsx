@@ -68,14 +68,11 @@ export default function Calculadora() {
                   placeholder="1000"
                   className="flex-1 px-4 py-2 border border-slate-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-300"
                   aria-label="Potencia"
-                  value={""}
-                  readOnly
                 />
                 <select
                   className="w-36 px-3 py-2 border border-slate-200 rounded-lg bg-white focus:outline-none"
                   aria-label="Unidad de potencia"
                   defaultValue="W"
-                  disabled
                 >
                   <option value="W">Watts (W)</option>
                   <option value="kW">Kilowatts (kW)</option>
@@ -92,8 +89,6 @@ export default function Calculadora() {
                 placeholder="8"
                 className="w-full px-4 py-2 border border-slate-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-300"
                 aria-label="Horas por dia"
-                value={""}
-                readOnly
               />
             </div>
 
@@ -106,8 +101,6 @@ export default function Calculadora() {
                 placeholder="0.15"
                 className="w-full px-4 py-2 border border-slate-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-300"
                 aria-label="Precio kWh"
-                value={""}
-                readOnly
               />
             </div>
 
@@ -115,7 +108,6 @@ export default function Calculadora() {
               <button
                 className="w-full bg-blue-600 hover:bg-blue-700 text-white font-semibold py-3 rounded-lg shadow-sm transition"
                 type="button"
-                disabled
               >
                 Calcular Consumo
               </button>
@@ -153,7 +145,6 @@ export default function Calculadora() {
                 className="w-full px-4 py-2 border border-slate-200 rounded-lg bg-white focus:outline-none"
                 aria-label="Electrodoméstico"
                 defaultValue=""
-                disabled
               >
                 <option value="">-- Selecciona --</option>
                 <option value="fridge">Nevera</option>
@@ -171,8 +162,6 @@ export default function Calculadora() {
                 placeholder="8"
                 className="w-full px-4 py-2 border border-slate-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-green-200"
                 aria-label="Horas uso (comunes)"
-                value={""}
-                readOnly
               />
             </div>
 
@@ -185,8 +174,6 @@ export default function Calculadora() {
                 placeholder="0.15"
                 className="w-full px-4 py-2 border border-slate-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-green-200"
                 aria-label="Precio kWh (comunes)"
-                value={""}
-                readOnly
               />
             </div>
 
@@ -194,7 +181,6 @@ export default function Calculadora() {
               <button
                 className="w-full bg-green-600 hover:bg-green-700 text-white font-semibold py-3 rounded-lg shadow-sm transition"
                 type="button"
-                disabled
               >
                 Calcular Consumo
               </button>

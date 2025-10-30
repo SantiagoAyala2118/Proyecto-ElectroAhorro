@@ -1,4 +1,5 @@
 import { useNavigate } from "react-router-dom";
+import { Navbar } from "../components/layouts/NavBar";
 
 export default function Calculadora() {
   const navigate = useNavigate(); // ✅ Correcto: en nivel superior del componente
@@ -17,24 +18,11 @@ export default function Calculadora() {
     <div className="min-h-screen w-full bg-cover bg-center bg-gradient-to-b from-[#eef6ff] to-[#e6eefc] flex flex-col items-center p-0 m-0  inset-0">
       {/* // className="min-h-screen min-w-screen w-screen bg-cover bg-gradient-to-b from-[#eef6ff] to-[#e6eefc] flex flex-col items-center py-12 px-6 m-0 p-0"> */}
       {/* Header con botones de navegación */}
-      <header className="w-full max-w-5xl text-center mb-8">
+      <header className="w-full max-w-5xl text-center mb-8 mt-20">
         {/* Botones de navegación */}
         <div className="flex justify-between items-center mb-6">
-          <button
-            onClick={handleBackToLogin}
-            className="bg-blue-600 hover:bg-blue-700 text-white font-semibold py-2 px-4 rounded-lg transition-colors duration-200"
-          >
-            ← Volver al Login
-          </button>
-
-          <button
-            onClick={handleGoToApp}
-            className="bg-green-600 hover:bg-green-700 text-white font-semibold py-2 px-4 rounded-lg transition-colors duration-200"
-          >
-            Ir a App Principal →
-          </button>
+          <Navbar />
         </div>
-
         <div className="flex items-center justify-center gap-3">
           <span className="text-3xl md:text-4xl">⚡</span>
           <h1 className="text-3xl md:text-4xl font-extrabold text-slate-800 drop-shadow-sm">

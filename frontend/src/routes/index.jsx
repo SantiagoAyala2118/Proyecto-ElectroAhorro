@@ -9,6 +9,6 @@ import Calculadora from "../pages/Calculadora.jsx";
 export const router = createBrowserRouter([
   { path: "/", element: <Registro /> },
   { path: "/login", element: <Login /> },
-  { path: "/app", element: <App /> },
+  { path: "/home", element: <App /> },
   { path: "/calculator", element: <Calculadora /> },
 ]);

@@ -73,7 +73,7 @@ export const Category = () => {
   });
 
   return (
-    <section className="py-20">
+    <section className="py-20 ">
       <Heading highlight="Categoría" heading="de Productos" />
 
       {/* Aca pones tus cards */}

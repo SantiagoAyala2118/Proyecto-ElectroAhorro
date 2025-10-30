@@ -36,9 +36,9 @@ export const Registro = () => {
     const password = watch("password");
 
     return (
-        <div 
+        <div
             className="min-h-screen w-screen bg-cover bg-center flex items-center justify-center p-0 m-0 fixed inset-0 overflow-hidden"
-            style={{ 
+            style={{
                 backgroundImage: "url(/fondo-login.jpg)",
                 backgroundSize: "cover",
                 backgroundPosition: "center",
@@ -48,6 +48,10 @@ export const Registro = () => {
             <div className="w-full max-w-md bg-blue-800/50 border-2 border-lime-300 rounded-2xl shadow-xl px-6 py-6 mx-auto">
                 <div className="text-center mb-6">
                     <h1 className="text-3xl font-bold text-lime-300 mb-2">ElectroAhorro</h1>
+                    <div className="bg-red-500 p-4 text-white">
+
+                        Test Tailwind - Esto debería ser rojo
+                    </div>
                     <p className="text-white">Crea tu cuenta para gestionar tu consumo eléctrico</p>
                 </div>
 
@@ -129,6 +133,9 @@ export const Registro = () => {
                         ¿Ya tienes una cuenta?{" "}
                         <Link to="/login" className="text-green-500 underline hover:text-lime-300 font-semibold">
                             Inicia sesión
+                        </Link>
+                        <Link to="/calculator" className="text-green-500 underline hover:text-lime-300 font-semibold">
+                            Calculadora
                         </Link>
                     </p>
                 </div>

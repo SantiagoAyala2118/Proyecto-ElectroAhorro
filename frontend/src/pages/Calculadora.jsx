@@ -14,7 +14,8 @@ export default function Calculadora() {
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-b from-[#eef6ff] to-[#e6eefc] flex flex-col items-center py-12 px-6">
+    <div className="min-h-screen w-full bg-cover bg-center bg-gradient-to-b from-[#eef6ff] to-[#e6eefc] flex flex-col items-center p-0 m-0  inset-0">
+      {/* // className="min-h-screen min-w-screen w-screen bg-cover bg-gradient-to-b from-[#eef6ff] to-[#e6eefc] flex flex-col items-center py-12 px-6 m-0 p-0"> */}
       {/* Header con botones de navegación */}
       <header className="w-full max-w-5xl text-center mb-8">
         {/* Botones de navegación */}
@@ -25,7 +26,7 @@ export default function Calculadora() {
           >
             ← Volver al Login
           </button>
-          
+
           <button
             onClick={handleGoToApp}
             className="bg-green-600 hover:bg-green-700 text-white font-semibold py-2 px-4 rounded-lg transition-colors duration-200"
@@ -47,16 +48,32 @@ export default function Calculadora() {
       <section className="w-full max-w-5xl grid grid-cols-1 md:grid-cols-2 gap-8">
         <div className="bg-white rounded-2xl shadow-lg p-6 md:p-8">
           <div className="flex items-center gap-3 mb-4">
-            <svg className="w-6 h-6 text-slate-700" viewBox="0 0 24 24" fill="none">
-              <path d="M3 12h18" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round"/>
-              <path d="M12 3v18" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round"/>
+            <svg
+              className="w-6 h-6 text-slate-700"
+              viewBox="0 0 24 24"
+              fill="none"
+            >
+              <path
+                d="M3 12h18"
+                stroke="currentColor"
+                strokeWidth="1.5"
+                strokeLinecap="round"
+              />
+              <path
+                d="M12 3v18"
+                stroke="currentColor"
+                strokeWidth="1.5"
+                strokeLinecap="round"
+              />
             </svg>
             <h2 className="text-xl font-bold text-slate-800">Cálculo Manual</h2>
           </div>
 
           <form className="space-y-4" onSubmit={(e) => e.preventDefault()}>
             <div>
-              <label className="block text-sm text-slate-600 mb-2">Potencia del Electrodoméstico</label>
+              <label className="block text-sm text-slate-600 mb-2">
+                Potencia del Electrodoméstico
+              </label>
               <div className="flex gap-3">
                 <input
                   type="text"
@@ -79,7 +96,9 @@ export default function Calculadora() {
             </div>
 
             <div>
-              <label className="block text-sm text-slate-600 mb-2">Horas de uso por día</label>
+              <label className="block text-sm text-slate-600 mb-2">
+                Horas de uso por día
+              </label>
               <input
                 type="text"
                 placeholder="8"
@@ -91,7 +110,9 @@ export default function Calculadora() {
             </div>
 
             <div>
-              <label className="block text-sm text-slate-600 mb-2">Precio por kWh (€)</label>
+              <label className="block text-sm text-slate-600 mb-2">
+                Precio por kWh (€)
+              </label>
               <input
                 type="text"
                 placeholder="0.15"
@@ -117,15 +138,29 @@ export default function Calculadora() {
         {/* Common Appliances Card */}
         <div className="bg-white rounded-2xl shadow-lg p-6 md:p-8">
           <div className="flex items-center gap-3 mb-4">
-            <svg className="w-6 h-6 text-slate-700" viewBox="0 0 24 24" fill="none">
-              <path d="M12 3C7 3 3 6 3 10v7a2 2 0 0 0 2 2h2v-6h10v6h2a2 2 0 0 0 2-2v-7c0-4-4-7-9-7z" stroke="currentColor" strokeWidth="1.2" strokeLinecap="round" strokeLinejoin="round"/>
+            <svg
+              className="w-6 h-6 text-slate-700"
+              viewBox="0 0 24 24"
+              fill="none"
+            >
+              <path
+                d="M12 3C7 3 3 6 3 10v7a2 2 0 0 0 2 2h2v-6h10v6h2a2 2 0 0 0 2-2v-7c0-4-4-7-9-7z"
+                stroke="currentColor"
+                strokeWidth="1.2"
+                strokeLinecap="round"
+                strokeLinejoin="round"
+              />
             </svg>
-            <h2 className="text-xl font-bold text-slate-800">Electrodomésticos Comunes</h2>
+            <h2 className="text-xl font-bold text-slate-800">
+              Electrodomésticos Comunes
+            </h2>
           </div>
 
           <form className="space-y-4" onSubmit={(e) => e.preventDefault()}>
             <div>
-              <label className="block text-sm text-slate-600 mb-2">Selecciona un electrodoméstico</label>
+              <label className="block text-sm text-slate-600 mb-2">
+                Selecciona un electrodoméstico
+              </label>
               <select
                 className="w-full px-4 py-2 border border-slate-200 rounded-lg bg-white focus:outline-none"
                 aria-label="Electrodoméstico"
@@ -140,7 +175,9 @@ export default function Calculadora() {
             </div>
 
             <div>
-              <label className="block text-sm text-slate-600 mb-2">Horas de uso por día</label>
+              <label className="block text-sm text-slate-600 mb-2">
+                Horas de uso por día
+              </label>
               <input
                 type="text"
                 placeholder="8"
@@ -152,7 +189,9 @@ export default function Calculadora() {
             </div>
 
             <div>
-              <label className="block text-sm text-slate-600 mb-2">Precio por kWh (€)</label>
+              <label className="block text-sm text-slate-600 mb-2">
+                Precio por kWh (€)
+              </label>
               <input
                 type="text"
                 placeholder="0.15"
@@ -182,7 +221,9 @@ export default function Calculadora() {
           <div>
             <div className="flex items-center gap-3 mb-3">
               <span className="text-2xl">💡</span>
-              <h3 className="font-semibold text-slate-800 text-lg">Información Útil</h3>
+              <h3 className="font-semibold text-slate-800 text-lg">
+                Información Útil
+              </h3>
             </div>
 
             <ul className="text-sm text-slate-600 list-disc list-inside space-y-2">
@@ -193,7 +234,9 @@ export default function Calculadora() {
           </div>
 
           <div>
-            <h4 className="font-semibold text-slate-800 mb-3">Consejos de ahorro:</h4>
+            <h4 className="font-semibold text-slate-800 mb-3">
+              Consejos de ahorro:
+            </h4>
             <ul className="text-sm text-slate-600 list-disc list-inside space-y-2">
               <li>Usa electrodomésticos eficientes (A+++)</li>
               <li>Desconecta aparatos en standby</li>

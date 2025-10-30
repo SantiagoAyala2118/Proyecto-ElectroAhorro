@@ -3,8 +3,15 @@ import logo from "../../assets/images/elecctroAHORRO.png";
 import { FaMagnifyingGlass } from "react-icons/fa6";
 import { MdOutlineLightMode } from "react-icons/md";
 import { TbMenu2 } from "react-icons/tb";
+import { useNavigate, Link } from "react-router-dom";
 
 export const Navbar = () => {
+  const navigate = useNavigate();
+
+  const handleGoToCalculator = () => {
+    navigate("/calculator");
+  };
+
   return (
     <header className="bg-blue-950 text-white fixed top-0 right-0 left-0 z-50">
       <nav className="max-w-[1400px] max-auto px-10 h-[14vh] flex justify-between items-center bg-blue-950">
@@ -40,7 +47,7 @@ export const Navbar = () => {
           </li>
           <li>
             <a
-              href="#"
+              onClick={handleGoToCalculator}
               className="font-semibold tracking-wider text-white hover:text-lime-400"
             >
               Calculadora

@@ -74,7 +74,7 @@ export const Category = () => {
 
   return (
     <section className="py-20 ">
-      <Heading highlight="Categoría" heading="de Productos" />
+      <Heading highlight="Categoría" heading="de Productos"  />
 
       {/* Aca pones tus cards */}
       <div className="flex flex-wrap justify-center">{renderCards}</div>

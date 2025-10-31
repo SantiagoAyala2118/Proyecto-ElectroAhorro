@@ -4,6 +4,7 @@ import { FaMagnifyingGlass } from "react-icons/fa6";
 import { MdOutlineLightMode } from "react-icons/md";
 import { TbMenu2 } from "react-icons/tb";
 import { useNavigate, Link } from "react-router-dom";
+import { LinkButton } from "../common/LinkButton";
 
 export const Navbar = () => {
   const navigate = useNavigate();
@@ -37,46 +38,54 @@ export const Navbar = () => {
         {/* DesktopMenu */}
 
         <ul className="md:flex items-center gap-x-15 hidden">
-          <li>
-            <a
-              onClick={handleGoToHome}
-              className="cursor-pointer font-semibold tracking-wider text-lime-400 hover:text-white"
-            >
-              Inicio
-            </a>
-          </li>
-          <li>
-            <a
-              onClick={handleGoToProducts}
-              className="cursor-pointer font-semibold tracking-wider text-white hover:text-lime-400"
-            >
-              Productos
-            </a>
-          </li>
-          <li>
-            <a
-              onClick={handleGoToSave}
-              className="cursor-pointer font-semibold tracking-wider text-white hover:text-lime-400"
-            >
-              Ahorro
-            </a>
-          </li>
-          <li>
-            <a
-              onClick={handleGoToCalculator}
-              className="cursor-pointer font-semibold tracking-wider text-white hover:text-lime-400 cursor-pointer"
-            >
-              Calculadora
-            </a>
-          </li>
-          <li>
-            <a
-              onClick={handleGoToProfile}
-              className="cursor-pointer font-semibold tracking-wider text-white hover:text-lime-400"
-            >
-              Perfil
-            </a>
-          </li>
+          {/* <li> */}
+          {/* <a */}
+          {/* onClick={handleGoToHome} */}
+          {/* className="cursor-pointer font-semibold tracking-wider text-lime-400 hover:text-white" */}
+          {/* > */}
+          {/* Inicio */}
+          {/* </a> */}
+          {/* </li> */}
+          {/* <li> */}
+          {/* <a */}
+          {/* onClick={handleGoToProducts} */}
+          {/* className="cursor-pointer font-semibold tracking-wider text-white hover:text-lime-400" */}
+          {/* > */}
+          {/* Productos */}
+          {/* </a> */}
+          {/* </li> */}
+          {/* <li> */}
+          {/* <a */}
+          {/* onClick={handleGoToSave} */}
+          {/* className="cursor-pointer font-semibold tracking-wider text-white hover:text-lime-400" */}
+          {/* > */}
+          {/* Ahorro */}
+          {/* </a> */}
+          {/* </li> */}
+          {/* <li> */}
+          {/* <a */}
+          {/* onClick={handleGoToCalculator} */}
+          {/* className="cursor-pointer font-semibold tracking-wider text-white hover:text-lime-400 cursor-pointer" */}
+          {/* > */}
+          {/* Calculadora */}
+          {/* </a> */}
+          {/* </li> */}
+          {/* <li> */}
+          {/* <a */}
+          {/* onClick={handleGoToProfile} */}
+          {/* className="cursor-pointer font-semibold tracking-wider text-white hover:text-lime-400" */}
+          {/* > */}
+          {/* Perfil */}
+          {/* </a> */}
+          {/* </li> */}
+          <LinkButton onNavigate={handleGoToHome} location={"Inicio"} />
+          <LinkButton onNavigate={handleGoToProducts} location={"Productos"} />
+          <LinkButton onNavigate={handleGoToSave} location={"Ahorro"} />
+          <LinkButton
+            onNavigate={handleGoToCalculator}
+            location={"Calculadora"}
+          />
+          <LinkButton onNavigate={handleGoToProfile} location={"Perfil"} />
         </ul>
 
         {/* nav action*/}

@@ -4,7 +4,7 @@ export const LinkButton = ({ onNavigate, location }) => {
       <div>
         <li>
           <a
-            onClick={onNavigate()}
+            onClick={() => onNavigate()}
             className="cursor-pointer font-semibold tracking-wider text-lime-400 hover:text-white"
           >
             {location}

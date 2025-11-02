@@ -1,17 +1,26 @@
 import { useNavigate } from "react-router-dom";
 import { Navbar } from "../components/layouts/NavBar";
+import { useFetch } from "../hooks/useFetch";
+import { useForm } from "../hooks/useForm";
 
 export default function Calculadora() {
-  const navigate = useNavigate(); // ✅ Correcto: en nivel superior del componente
+  //* NAVEGACIÓN
+  const navigate = useNavigate();
+
+  //* FETCH
+  const { getFetch } = useFetch("http://localhost:4000/api/calculator");
+
+  //* FORM
+  const { stateForm, handleChange, handleSubmit } = useForm({
+    power: "",
+    hours_per_day: "",
+    days: "",
+    costPerKwh: "",
+  });
 
   // Función para volver al login o registro
   const handleBackToLogin = () => {
     navigate("/login");
-  };
-
-  // Función para ir a la app principal
-  const handleGoToApp = () => {
-    navigate("/app");
   };
 
   return (
@@ -57,17 +66,23 @@ export default function Calculadora() {
             <h2 className="text-xl font-bold text-slate-800">Cálculo Manual</h2>
           </div>
 
-          <form className="space-y-4" onSubmit={(e) => e.preventDefault()}>
+          <form
+            className="space-y-4"
+            onSubmit={(e) => (handleSubmit(e), getFetch(stateForm))}
+          >
             <div>
               <label className="block text-sm text-slate-600 mb-2">
                 Potencia del Electrodoméstico
               </label>
               <div className="flex gap-3">
                 <input
-                  type="text"
+                  type="number"
                   placeholder="1000"
                   className="flex-1 px-4 py-2 border border-slate-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-300"
                   aria-label="Potencia"
+                  name="power"
+                  value={stateForm.power}
+                  onChange={handleChange}
                 />
                 <select
                   className="w-36 px-3 py-2 border border-slate-200 rounded-lg bg-white focus:outline-none"
@@ -85,10 +100,28 @@ export default function Calculadora() {
                 Horas de uso por día
               </label>
               <input
-                type="text"
+                type="number"
                 placeholder="8"
                 className="w-full px-4 py-2 border border-slate-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-300"
                 aria-label="Horas por dia"
+                name="hours_per_day"
+                value={stateForm.hours_per_day}
+                onChange={handleChange}
+              />
+            </div>
+
+            <div>
+              <label className="block text-sm text-slate-600 mb-2">
+                Promedio de días al año
+              </label>
+              <input
+                type="number"
+                placeholder="247"
+                className="w-full px-4 py-2 border border-slate-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-300"
+                aria-label="Cantidad de días"
+                name="days"
+                value={stateForm.days}
+                onChange={handleChange}
               />
             </div>
 
@@ -97,17 +130,20 @@ export default function Calculadora() {
                 Precio por kWh (€)
               </label>
               <input
-                type="text"
+                type="number"
                 placeholder="0.15"
                 className="w-full px-4 py-2 border border-slate-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-300"
                 aria-label="Precio kWh"
+                name="costPerKwh"
+                value={stateForm.costPerKwh}
+                onChange={handleChange}
               />
             </div>
 
             <div className="pt-2">
               <button
                 className="w-full bg-blue-600 hover:bg-blue-700 text-white font-semibold py-3 rounded-lg shadow-sm transition"
-                type="button"
+                type="submit"
               >
                 Calcular Consumo
               </button>
@@ -162,6 +198,9 @@ export default function Calculadora() {
                 placeholder="8"
                 className="w-full px-4 py-2 border border-slate-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-green-200"
                 aria-label="Horas uso (comunes)"
+                name="hours_per_day"
+                value={stateForm.hours_per_day}
+                onChange={handleChange}
               />
             </div>
 
@@ -174,6 +213,9 @@ export default function Calculadora() {
                 placeholder="0.15"
                 className="w-full px-4 py-2 border border-slate-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-green-200"
                 aria-label="Precio kWh (comunes)"
+                name="costPerKwh"
+                value={stateForm.costPerKwh}
+                onChange={handleChange}
               />
             </div>
 

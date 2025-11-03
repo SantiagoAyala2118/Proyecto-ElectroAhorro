@@ -11,11 +11,12 @@ export default function Calculadora() {
   const { getFetch } = useFetch("http://localhost:4000/api/calculator");
 
   //* FORM
-  const { stateForm, handleChange, handleSubmit } = useForm({
+  const { stateForm, handleChange, handleSelect, handleSubmit } = useForm({
     power: "",
     hours_per_day: "",
     days: "",
     costPerKwh: "",
+    powerUnity: "",
   });
 
   // Función para volver al login o registro
@@ -88,6 +89,8 @@ export default function Calculadora() {
                   className="w-36 px-3 py-2 border border-slate-200 rounded-lg bg-white focus:outline-none"
                   aria-label="Unidad de potencia"
                   defaultValue="W"
+                  name="powerUnity"
+                  onChange={handleChange}
                 >
                   <option value="W">Watts (W)</option>
                   <option value="kW">Kilowatts (kW)</option>
@@ -127,7 +130,7 @@ export default function Calculadora() {
 
             <div>
               <label className="block text-sm text-slate-600 mb-2">
-                Precio por kWh (€)
+                Precio por kWh
               </label>
               <input
                 type="number"
@@ -172,7 +175,10 @@ export default function Calculadora() {
             </h2>
           </div>
 
-          <form className="space-y-4" onSubmit={(e) => e.preventDefault()}>
+          <form
+            className="space-y-4"
+            onSubmit={(e) => (handleSubmit(e), getFetch(stateForm))}
+          >
             <div>
               <label className="block text-sm text-slate-600 mb-2">
                 Selecciona un electrodoméstico
@@ -185,8 +191,25 @@ export default function Calculadora() {
                 <option value="">-- Selecciona --</option>
                 <option value="fridge">Nevera</option>
                 <option value="tv">Televisor</option>
-                <option value="washer">Lavadora</option>
+                <option value="washer">Lavarropas</option>
               </select>
+            </div>
+
+            <div>
+              <label className="block text-sm text-slate-600 mb-2">
+                Potencia del Electrodoméstico (Kwh)
+              </label>
+              <div className="flex gap-3">
+                <input
+                  type="number"
+                  placeholder="1000"
+                  className="flex-1 px-4 py-2 border border-slate-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-300"
+                  aria-label="Potencia"
+                  name="power"
+                  value={stateForm.power}
+                  onChange={handleChange}
+                />
+              </div>
             </div>
 
             <div>
@@ -206,7 +229,22 @@ export default function Calculadora() {
 
             <div>
               <label className="block text-sm text-slate-600 mb-2">
-                Precio por kWh (€)
+                Promedio de días al año
+              </label>
+              <input
+                type="number"
+                placeholder="247"
+                className="w-full px-4 py-2 border border-slate-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-300"
+                aria-label="Cantidad de días"
+                name="days"
+                value={stateForm.days}
+                onChange={handleChange}
+              />
+            </div>
+
+            <div>
+              <label className="block text-sm text-slate-600 mb-2">
+                Precio por kWh
               </label>
               <input
                 type="text"

@@ -3,16 +3,23 @@ import { CalculationModel } from "../models/calculator.model.js";
 import { UserModel } from "../models/user.model.js";
 
 export const createCalculation = async (req, res) => {
-  const { costPerKwh } = req.body;
+  const { costPerKwh, powerUnity } = req.body;
 
   const userLogged = req.userLogged;
   const validatedData = matchedData(req);
   try {
     // TODO: Esto calcula el total del consumo de la persona
-    const total_consumption =
-      (validatedData.power * validatedData.hours_per_day * validatedData.days) /
-      1000; //TODO: Al dividir por 1000 sacamos los Kwh
-
+    let total_consumption;
+    if (powerUnity === "W") {
+      total_consumption =
+        (validatedData.power *
+          validatedData.hours_per_day *
+          validatedData.days) /
+        1000; //TODO: Al dividir por 1000 sacamos los Kwh
+    } else {
+      total_consumption =
+        validatedData.power * validatedData.hours_per_day * validatedData.days;
+    }
     //TODO: Esto es lo que la persona dice que cuesta un Kwh
     const tariff = costPerKwh;
     //TODO: esto ya es el costo final

@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { useNavigate } from "react-router-dom";
-import { Sidebar } from "../components/common/SideBar"
+import { Sidebar } from "../components/layouts/SideBar"
 
 
 export const UserProfile = () => {
@@ -12,6 +12,7 @@ export const UserProfile = () => {
   const [activeSection, setActiveSection] = useState('profile');
 
   // Datos mock para demostración
+  //* Los datos de usuario en la base de datos
   const userData = {
     name: "Carlos Rodríguez",
     email: "carlos.rodriguez@email.com",
@@ -21,7 +22,7 @@ export const UserProfile = () => {
     monthlyConsumption: "245 kWh",
     annualConsumption: "2,940 kWh"
   };
-
+//& Esto deberia ser un fetch a la base de datos de electrodomesticos (custom hook)
   const appliancesList = [
     { name: "Refrigerador", consumption: "85 kWh/mes", status: "Activo" },
     { name: "Lavadora", consumption: "45 kWh/mes", status: "Activo" },
@@ -30,6 +31,7 @@ export const UserProfile = () => {
     { name: "Computadora", consumption: "25 kWh/mes", status: "Activo" },
   ];
 
+//& Aqui iria la biblioteca de React de Graficos
   const monthlyData = [
     { month: "Ene", consumption: 280 },
     { month: "Feb", consumption: 245 },
@@ -95,7 +97,7 @@ export const UserProfile = () => {
                     <div className="text-sm opacity-90">Electrodomésticos</div>
                   </div>
                   <div className="bg-gradient-to-br from-[#90AFC5] to-[#763626] p-4 rounded-xl text-white text-center shadow-lg">
-                    <div className="text-2xl font-bold">€85</div>
+                    <div className="text-2xl font-bold">$85.000</div>
                     <div className="text-sm opacity-90">Costo Estimado</div>
                   </div>
                 </div>
@@ -181,7 +183,7 @@ export const UserProfile = () => {
                   {[2024, 2023, 2022].map((year) => (
                     <div key={year} className="flex justify-between items-center p-3 bg-white/50 rounded-lg">
                       <span className="font-medium text-[#2A3132]">{year}</span>
-                      <span className="text-[#763626] font-bold">{(year === 2024 ? 2940 : year === 2023 ? 3120 : 2850).toLocaleString()} kWh</span>
+                      <span className="text-[#763626] font-bold">{(year === 2024 ? 29400 : year === 2023 ? 31200 : 28500).toLocaleString()} kWh</span>
                     </div>
                   ))}
                 </div>

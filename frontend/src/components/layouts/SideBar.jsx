@@ -21,7 +21,7 @@ export const Sidebar = ({ activeSection, setActiveSection }) => {
       <nav className="p-4">
         {menuItems.map((item) => (
           <button
-            key={item.id}
+          key={item.id}
             onClick={() => setActiveSection(item.id)}
             className={`w-full flex items-center space-x-3 p-3 rounded-lg mb-2 transition-all duration-200 ${
               activeSection === item.id

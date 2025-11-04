@@ -58,7 +58,7 @@ export const Category = () => {
     return (
       // no olvides colocar la key para que no se repitan
       <div key={card.id} className="w-1/3 p-4">
-        <div className="bg-white border-lime-400 rounded-lg shadow-md p-4 flex flex-col items-center">
+        <div className="bg-white border-lime-400 rounded-lg shadow-md p-4 flex flex-col items-center hover:scale-105 transition-all duration-300">
           <img
             src={card.image}
             alt={card.title}
@@ -74,7 +74,7 @@ export const Category = () => {
 
   return (
     <section className="py-20 ">
-      <Heading highlight="Categoría" heading="de Productos"  />
+      <Heading highlight="Categoría" heading="de Productos" />
 
       {/* Aca pones tus cards */}
       <div className="flex flex-wrap justify-center">{renderCards}</div>

@@ -1,14 +1,10 @@
 import { useState } from 'react';
 import { useNavigate } from "react-router-dom";
 import { Sidebar } from "../components/layouts/SideBar"
-
+import Spline from '@splinetool/react-spline';
 
 export const UserProfile = () => {
   const navigate = useNavigate();
-
-  // const handleBackToHome = () => {
-  //   navigate("/Home");
-  // };
   const [activeSection, setActiveSection] = useState('profile');
 
   // Datos mock para demostración
@@ -22,7 +18,8 @@ export const UserProfile = () => {
     monthlyConsumption: "245 kWh",
     annualConsumption: "2,940 kWh"
   };
-//& Esto deberia ser un fetch a la base de datos de electrodomesticos (custom hook)
+  
+  //& Esto deberia ser un fetch a la base de datos de electrodomesticos (custom hook)
   const appliancesList = [
     { name: "Refrigerador", consumption: "85 kWh/mes", status: "Activo" },
     { name: "Lavadora", consumption: "45 kWh/mes", status: "Activo" },
@@ -31,7 +28,7 @@ export const UserProfile = () => {
     { name: "Computadora", consumption: "25 kWh/mes", status: "Activo" },
   ];
 
-//& Aqui iria la biblioteca de React de Graficos
+  //& Aqui iria la biblioteca de React de Graficos
   const monthlyData = [
     { month: "Ene", consumption: 280 },
     { month: "Feb", consumption: 245 },
@@ -210,18 +207,15 @@ export const UserProfile = () => {
             </div>
           </div>
 
-          {/* Espacio reservado para animación 3D */}
-          <div id="animation-space" className="h-96 mt-12 rounded-2xl bg-black/10 border-2 border-dashed border-white/20 flex items-center justify-center">
-            <div className="text-center text-white/60">
-              <div className="text-4xl mb-4">🎮</div>
-              <p className="text-xl">Espacio para Animación 3D</p>
-              <p className="text-sm mt-2">Tu animación aparecerá aquí cuando hagas scroll</p>
-            </div>
+          {/* Animación 3D con Spline - REEMPLAZADO */}
+          <div className="h-96 mt-12 rounded-2xl overflow-hidden shadow-2xl border-2 border-white/20 bg-black/5">
+            <Spline
+              scene="https://prod.spline.design/yvKFL6HrJ5lSHl8p/scene.splinecode"
+              className="w-full h-full"
+            />
           </div>
         </div>
       </div>
     </div>
   );
 };
-
-

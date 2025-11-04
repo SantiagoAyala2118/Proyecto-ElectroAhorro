@@ -3,16 +3,23 @@ import { CalculationModel } from "../models/calculator.model.js";
 import { UserModel } from "../models/user.model.js";
 
 export const createCalculation = async (req, res) => {
-  const { costPerKwh } = req.body;
+  const { costPerKwh, powerUnity } = req.body;
 
   const userLogged = req.userLogged;
   const validatedData = matchedData(req);
   try {
     // TODO: Esto calcula el total del consumo de la persona
-    const total_consumption =
-      (validatedData.power * validatedData.hours_per_day * validatedData.days) /
-      1000; //TODO: Al dividir por 1000 sacamos los Kwh
-
+    let total_consumption;
+    if (powerUnity === "W") {
+      total_consumption =
+        (validatedData.power *
+          validatedData.hours_per_day *
+          validatedData.days) /
+        1000; //TODO: Al dividir por 1000 sacamos los Kwh
+    } else {
+      total_consumption =
+        validatedData.power * validatedData.hours_per_day * validatedData.days;
+    }
     //TODO: Esto es lo que la persona dice que cuesta un Kwh
     const tariff = costPerKwh;
     //TODO: esto ya es el costo final
@@ -29,12 +36,17 @@ export const createCalculation = async (req, res) => {
     });
 
     // ! ESTO ES PARA QUE EL FRONT LEA LA DATA Y GENERE LOS GRÁFICOS
-    const perDayKwh = (power * hours_per_day) / 1000;
+    const perDayKwh =
+      (validatedData.power * validatedData.hours_per_day) / 1000;
+
     const dailyData = [];
+
     const today = new Date();
-    for (let i = 0; i < days; i++) {
+
+    for (let i = 0; i < validatedData.days; i++) {
       const d = new Date(today);
       d.setDate(today.getDate() + i);
+
       dailyData.push({
         date: d.toISOString().slice(0, 10), // "YYYY-MM-DD"
         kwh: Number(perDayKwh.toFixed(4)),

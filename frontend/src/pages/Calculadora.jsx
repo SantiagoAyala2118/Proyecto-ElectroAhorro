@@ -1,17 +1,27 @@
 import { useNavigate } from "react-router-dom";
-import { Navbar } from "../components/layouts/NavBar"
+import { Navbar } from "../components/layouts/NavBar";
+import { useFetch } from "../hooks/useFetch";
+import { useForm } from "../hooks/useForm";
 
 export default function Calculadora() {
-  const navigate = useNavigate(); // ✅ Correcto: en nivel superior del componente
+  //* NAVEGACIÓN
+  const navigate = useNavigate();
+
+  //* FETCH
+  const { getFetch } = useFetch("http://localhost:4000/api/calculator");
+
+  //* FORM
+  const { stateForm, handleChange, handleSelect, handleSubmit } = useForm({
+    power: "",
+    hours_per_day: "",
+    days: "",
+    costPerKwh: "",
+    powerUnity: "",
+  });
 
   // Función para volver al login o registro
   const handleBackToLogin = () => {
     navigate("/login");
-  };
-
-  // Función para ir a la app principal
-  const handleGoToApp = () => {
-    navigate("/app");
   };
 
   return (
@@ -36,32 +46,51 @@ export default function Calculadora() {
       <section className="w-full max-w-5xl grid grid-cols-1 md:grid-cols-2 gap-8">
         <div className="bg-white rounded-2xl shadow-lg p-6 md:p-8">
           <div className="flex items-center gap-3 mb-4">
-            <svg className="w-6 h-6 text-slate-700" viewBox="0 0 24 24" fill="none">
-              <path d="M3 12h18" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" />
-              <path d="M12 3v18" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" />
+            <svg
+              className="w-6 h-6 text-slate-700"
+              viewBox="0 0 24 24"
+              fill="none"
+            >
+              <path
+                d="M3 12h18"
+                stroke="currentColor"
+                strokeWidth="1.5"
+                strokeLinecap="round"
+              />
+              <path
+                d="M12 3v18"
+                stroke="currentColor"
+                strokeWidth="1.5"
+                strokeLinecap="round"
+              />
             </svg>
             <h2 className="text-xl font-bold text-slate-800">Cálculo Manual</h2>
           </div>
 
-          <form className="space-y-4" onSubmit={(e) => e.preventDefault()}>
+          <form
+            className="space-y-4"
+            onSubmit={(e) => (handleSubmit(e), getFetch(stateForm))}
+          >
             <div>
               <label className="block text-sm text-slate-600 mb-2">
                 Potencia del Electrodoméstico
               </label>
               <div className="flex gap-3">
                 <input
-                  type="text"
+                  type="number"
                   placeholder="1000"
                   className="flex-1 px-4 py-2 border border-slate-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-300"
                   aria-label="Potencia"
-                  value={""}
-                  readOnly
+                  name="power"
+                  value={stateForm.power}
+                  onChange={handleChange}
                 />
                 <select
                   className="w-36 px-3 py-2 border border-slate-200 rounded-lg bg-white focus:outline-none"
                   aria-label="Unidad de potencia"
                   defaultValue="W"
-                  disabled
+                  name="powerUnity"
+                  onChange={handleChange}
                 >
                   <option value="W">Watts (W)</option>
                   <option value="kW">Kilowatts (kW)</option>
@@ -74,34 +103,50 @@ export default function Calculadora() {
                 Horas de uso por día
               </label>
               <input
-                type="text"
+                type="number"
                 placeholder="8"
                 className="w-full px-4 py-2 border border-slate-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-300"
                 aria-label="Horas por dia"
-                value={""}
-                readOnly
+                name="hours_per_day"
+                value={stateForm.hours_per_day}
+                onChange={handleChange}
               />
             </div>
 
             <div>
               <label className="block text-sm text-slate-600 mb-2">
-                Precio por kWh (€)
+                Promedio de días al año
               </label>
               <input
-                type="text"
+                type="number"
+                placeholder="247"
+                className="w-full px-4 py-2 border border-slate-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-300"
+                aria-label="Cantidad de días"
+                name="days"
+                value={stateForm.days}
+                onChange={handleChange}
+              />
+            </div>
+
+            <div>
+              <label className="block text-sm text-slate-600 mb-2">
+                Precio por kWh
+              </label>
+              <input
+                type="number"
                 placeholder="0.15"
                 className="w-full px-4 py-2 border border-slate-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-300"
                 aria-label="Precio kWh"
-                value={""}
-                readOnly
+                name="costPerKwh"
+                value={stateForm.costPerKwh}
+                onChange={handleChange}
               />
             </div>
 
             <div className="pt-2">
               <button
                 className="w-full bg-blue-600 hover:bg-blue-700 text-white font-semibold py-3 rounded-lg shadow-sm transition"
-                type="button"
-                disabled
+                type="submit"
               >
                 Calcular Consumo
               </button>
@@ -112,15 +157,28 @@ export default function Calculadora() {
         {/* Common Appliances Card */}
         <div className="bg-white rounded-2xl shadow-lg p-6 md:p-8">
           <div className="flex items-center gap-3 mb-4">
-            <svg className="w-6 h-6 text-slate-700" viewBox="0 0 24 24" fill="none">
-              <path d="M12 3C7 3 3 6 3 10v7a2 2 0 0 0 2 2h2v-6h10v6h2a2 2 0 0 0 2-2v-7c0-4-4-7-9-7z" stroke="currentColor" strokeWidth="1.2" strokeLinecap="round" strokeLinejoin="round" />
+            <svg
+              className="w-6 h-6 text-slate-700"
+              viewBox="0 0 24 24"
+              fill="none"
+            >
+              <path
+                d="M12 3C7 3 3 6 3 10v7a2 2 0 0 0 2 2h2v-6h10v6h2a2 2 0 0 0 2-2v-7c0-4-4-7-9-7z"
+                stroke="currentColor"
+                strokeWidth="1.2"
+                strokeLinecap="round"
+                strokeLinejoin="round"
+              />
             </svg>
             <h2 className="text-xl font-bold text-slate-800">
               Electrodomésticos Comunes
             </h2>
           </div>
 
-          <form className="space-y-4" onSubmit={(e) => e.preventDefault()}>
+          <form
+            className="space-y-4"
+            onSubmit={(e) => (handleSubmit(e), getFetch(stateForm))}
+          >
             <div>
               <label className="block text-sm text-slate-600 mb-2">
                 Selecciona un electrodoméstico
@@ -129,13 +187,29 @@ export default function Calculadora() {
                 className="w-full px-4 py-2 border border-slate-200 rounded-lg bg-white focus:outline-none"
                 aria-label="Electrodoméstico"
                 defaultValue=""
-                disabled
               >
                 <option value="">-- Selecciona --</option>
                 <option value="fridge">Nevera</option>
                 <option value="tv">Televisor</option>
-                <option value="washer">Lavadora</option>
+                <option value="washer">Lavarropas</option>
               </select>
+            </div>
+
+            <div>
+              <label className="block text-sm text-slate-600 mb-2">
+                Potencia del Electrodoméstico (Kwh)
+              </label>
+              <div className="flex gap-3">
+                <input
+                  type="number"
+                  placeholder="1000"
+                  className="flex-1 px-4 py-2 border border-slate-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-300"
+                  aria-label="Potencia"
+                  name="power"
+                  value={stateForm.power}
+                  onChange={handleChange}
+                />
+              </div>
             </div>
 
             <div>
@@ -147,22 +221,39 @@ export default function Calculadora() {
                 placeholder="8"
                 className="w-full px-4 py-2 border border-slate-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-green-200"
                 aria-label="Horas uso (comunes)"
-                value={""}
-                readOnly
+                name="hours_per_day"
+                value={stateForm.hours_per_day}
+                onChange={handleChange}
               />
             </div>
 
             <div>
               <label className="block text-sm text-slate-600 mb-2">
-                Precio por kWh (€)
+                Promedio de días al año
+              </label>
+              <input
+                type="number"
+                placeholder="247"
+                className="w-full px-4 py-2 border border-slate-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-300"
+                aria-label="Cantidad de días"
+                name="days"
+                value={stateForm.days}
+                onChange={handleChange}
+              />
+            </div>
+
+            <div>
+              <label className="block text-sm text-slate-600 mb-2">
+                Precio por kWh
               </label>
               <input
                 type="text"
                 placeholder="0.15"
                 className="w-full px-4 py-2 border border-slate-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-green-200"
                 aria-label="Precio kWh (comunes)"
-                value={""}
-                readOnly
+                name="costPerKwh"
+                value={stateForm.costPerKwh}
+                onChange={handleChange}
               />
             </div>
 
@@ -170,7 +261,6 @@ export default function Calculadora() {
               <button
                 className="w-full bg-green-600 hover:bg-green-700 text-white font-semibold py-3 rounded-lg shadow-sm transition"
                 type="button"
-                disabled
               >
                 Calcular Consumo
               </button>

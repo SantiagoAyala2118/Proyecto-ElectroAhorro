@@ -27,7 +27,7 @@ export const Login = () => {
         const data = await response.json();
         console.log("Inicio de sesión exitoso:", data);
 
-        navigate("/app");
+        navigate("/home");
       } else {
         alert("Email o contraseña incorrectos");
       }
@@ -44,7 +44,7 @@ export const Login = () => {
         backgroundImage: "url(/fondo-login.jpg)",
         backgroundSize: "cover",
         backgroundPosition: "center",
-        backgroundRepeat: "no-repeat"
+        backgroundRepeat: "no-repeat",
       }}
     >
       <div className="bg-blue-800/50 rounded-2xl border-2 border-solid border-lime-300 shadow-xl px-7 py-3 w-100 max-w-md mt-2">

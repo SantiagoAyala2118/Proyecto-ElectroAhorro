@@ -15,4 +15,6 @@ export const router = createBrowserRouter([
   { path: "/calculator", element: <Calculadora /> },
   { path: "/user/profile", element: <UserProfile /> },
   { path: "/catalogo", element: <CatalogoElectrodomesticos /> },
+  { path: "/user/profile", element: <UserProfile /> },
+  { path: "/catalogo", element: <CatalogoElectrodomesticos /> },
 ]);

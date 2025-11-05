@@ -24,6 +24,11 @@ export default function Calculadora() {
     navigate("/login");
   };
 
+  // Función para ir a la app principal
+  // const handleGoToApp = () => {
+  //   navigate("/app");
+  // };
+
   return (
     <div className="min-h-screen w-full bg-cover bg-center bg-gradient-to-b from-[#eef6ff] to-[#e6eefc] flex flex-col items-center p-0 m-0  inset-0">
       {/* // className="min-h-screen min-w-screen w-screen bg-cover bg-gradient-to-b from-[#eef6ff] to-[#e6eefc] flex flex-col items-center py-12 px-6 m-0 p-0"> */}

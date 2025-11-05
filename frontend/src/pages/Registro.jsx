@@ -1,8 +1,11 @@
 import { useForm } from "react-hook-form";
 import { useNavigate, Link } from "react-router-dom";
+import { useState, useEffect } from "react";
+import "../styles/components/SpaceBackground.css";
 
 export const Registro = () => {
   const navigate = useNavigate();
+  const [lightsOn, setLightsOn] = useState(true);
   const {
     register,
     handleSubmit,
@@ -35,23 +38,100 @@ export const Registro = () => {
 
   const password = watch("password");
 
+  // Generar estrellas aleatorias
+  const [stars, setStars] = useState([]);
+  
+  useEffect(() => {
+    const generateStars = () => {
+      const newStars = [];
+      for (let i = 0; i < 150; i++) {
+        newStars.push({
+          id: i,
+          x: Math.random() * 100,
+          y: Math.random() * 100,
+          size: Math.random() * 3 + 1,
+          opacity: Math.random() * 0.8 + 0.2,
+          animationDelay: Math.random() * 5,
+          animationDuration: Math.random() * 3 + 2
+        });
+      }
+      setStars(newStars);
+    };
+    
+    generateStars();
+  }, []);
+
+  const toggleLights = () => {
+    setLightsOn(!lightsOn);
+  };
+
   return (
-    <div
-      className="min-h-screen w-screen bg-cover bg-center flex items-center justify-center p-0 m-0 fixed inset-0 overflow-hidden"
-      style={{
-        backgroundImage: "url(/fondo-login.jpg)",
-        backgroundSize: "cover",
-        backgroundPosition: "center",
-        backgroundRepeat: "no-repeat",
-      }}
+    <div 
+      className={`min-h-screen w-screen flex items-center justify-center p-0 m-0 fixed inset-0 overflow-hidden cursor-pointer space-background ${lightsOn ? '' : 'lights-off'}`}
+      onClick={toggleLights}
     >
-      <div className="w-full max-w-md bg-blue-800/50 border-2 border-lime-300 rounded-2xl shadow-xl px-6 py-6 mx-auto">
+      {/* Fondo de estrellas */}
+      <div className="absolute inset-0">
+        {stars.map(star => (
+          <div
+            key={star.id}
+            className={`star twinkle-star ${lightsOn ? '' : 'lights-off'}`}
+            style={{
+              left: `${star.x}%`,
+              top: `${star.y}%`,
+              width: `${star.size}px`,
+              height: `${star.size}px`,
+              opacity: lightsOn ? star.opacity : star.opacity * 0.1,
+              '--duration': `${star.animationDuration}s`,
+              '--delay': `${star.animationDelay}s`
+            }}
+          />
+        ))}
+      </div>
+
+      {/* Planeta Tierra */}
+      <div className="absolute top-1/2 left-1/4 transform -translate-y-1/2 -translate-x-1/2">
+        <div className={`planet-earth ${lightsOn ? '' : 'lights-off'}`}>
+          {/* Continentes simulados */}
+          <div className="continents">
+            <div className="continent continent-1"></div>
+            <div className="continent continent-2"></div>
+            <div className="continent continent-3"></div>
+            <div className="continent continent-4"></div>
+          </div>
+          
+          {/* Nubes */}
+          <div className={`clouds ${lightsOn ? '' : 'lights-off'}`}>
+            <div className="cloud cloud-1"></div>
+            <div className="cloud cloud-2"></div>
+            <div className="cloud cloud-3"></div>
+          </div>
+
+          {/* Anillo orbital */}
+          <div className={`orbital-ring ${lightsOn ? '' : 'lights-off'}`}></div>
+        </div>
+      </div>
+
+      {/* Satélites */}
+      <div className={`satellite ${lightsOn ? '' : 'lights-off'}`} style={{
+        top: '33%',
+        right: '25%'
+      }}></div>
+
+      {/* Formulario */}
+      <div 
+        className="relative z-10 w-full max-w-md form-container px-6 py-6 mx-4"
+        onClick={(e) => e.stopPropagation()}
+      >
         <div className="text-center mb-6">
           <h1 className="text-3xl font-bold text-lime-300 mb-2">
             ElectroAhorro
           </h1>
-          <p className="text-white">
+          <p className="text-white/90">
             Crea tu cuenta para gestionar tu consumo eléctrico
+          </p>
+          <p className="text-white/60 text-sm mt-2">
+            💡 Click en el espacio para {lightsOn ? 'apagar' : 'encender'} las luces
           </p>
         </div>
 
@@ -63,13 +143,13 @@ export const Registro = () => {
             <input
               type="text"
               placeholder="Introduce tu nombre completo"
-              className="w-full px-3 py-2 border border-lime-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent text-white bg-transparent"
+              className="w-full px-3 py-2 rounded-lg form-input"
               {...register("full_name", {
                 required: "Este campo es obligatorio",
               })}
             />
             {errors.full_name && (
-              <p className="text-red-500 text-xs mt-1">
+              <p className="text-red-300 text-xs mt-1">
                 {errors.full_name.message}
               </p>
             )}
@@ -82,14 +162,14 @@ export const Registro = () => {
             <input
               type="email"
               placeholder="Introduce tu email"
-              className="w-full px-3 py-2 border border-lime-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent text-white bg-transparent"
+              className="w-full px-3 py-2 rounded-lg form-input"
               {...register("email", {
                 required: "Este campo es obligatorio",
                 pattern: { value: /^\S+@\S+$/i, message: "Email no válido" },
               })}
             />
             {errors.email && (
-              <p className="text-red-500 text-xs mt-1">
+              <p className="text-red-300 text-xs mt-1">
                 {errors.email.message}
               </p>
             )}
@@ -102,7 +182,7 @@ export const Registro = () => {
             <input
               type="password"
               placeholder="Crea tu contraseña"
-              className="w-full px-3 py-2 border border-lime-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent text-white bg-transparent"
+              className="w-full px-3 py-2 rounded-lg form-input"
               {...register("password", {
                 required: "Este campo es obligatorio",
                 minLength: {
@@ -112,7 +192,7 @@ export const Registro = () => {
               })}
             />
             {errors.password && (
-              <p className="text-red-500 text-xs mt-1">
+              <p className="text-red-300 text-xs mt-1">
                 {errors.password.message}
               </p>
             )}
@@ -125,7 +205,7 @@ export const Registro = () => {
             <input
               type="password"
               placeholder="Confirma tu contraseña"
-              className="w-full px-3 py-2 border border-lime-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent text-white bg-transparent"
+              className="w-full px-3 py-2 rounded-lg form-input"
               {...register("confirmPassword", {
                 required: "Este campo es obligatorio",
                 validate: (value) =>
@@ -133,7 +213,7 @@ export const Registro = () => {
               })}
             />
             {errors.confirmPassword && (
-              <p className="text-red-500 text-xs mt-1">
+              <p className="text-red-300 text-xs mt-1">
                 {errors.confirmPassword.message}
               </p>
             )}
@@ -143,41 +223,44 @@ export const Registro = () => {
             <input
               type="checkbox"
               id="terms"
-              className="h-4 w-4 text-blue-600 focus:ring-blue-500 border-gray-300 rounded"
+              className="h-4 w-4 text-lime-300 focus:ring-lime-300 border-lime-300/70 rounded bg-white/10"
               {...register("terms", {
                 required: "Debes aceptar los términos y condiciones",
               })}
             />
-            <label htmlFor="terms" className="ml-2 block text-sm text-white">
+            <label htmlFor="terms" className="ml-2 block text-sm text-white/90">
               Acepto los términos y condiciones
             </label>
           </div>
           {errors.terms && (
-            <p className="text-red-500 text-xs mt-1">{errors.terms.message}</p>
+            <p className="text-red-300 text-xs mt-1">{errors.terms.message}</p>
           )}
 
           <button
             type="submit"
-            className="w-full bg-blue-600 hover:bg-blue-700 text-lime-300 font-semibold py-2 px-4 rounded-lg transition-colors duration-200 hover:bg-lime-400 hover:text-blue-900"
+            className="w-full font-semibold py-2 px-4 rounded-lg submit-button"
           >
             Crear cuenta
           </button>
         </form>
 
         <div className="text-center mt-4">
-          <p className="text-white text-sm">
+          <p className="text-white/80 text-sm">
             ¿Ya tienes una cuenta?{" "}
             <Link
               to="/login"
-              className="text-green-500 underline hover:text-lime-300 font-semibold"
+              className="text-lime-300 underline hover:text-lime-200 font-semibold"
             >
               Inicia sesión
             </Link>
+          </p>
+          <p className="text-white/80 text-sm mt-2">
+            ¿Quieres calcular tu consumo?{" "}
             <Link
               to="/calculator"
-              className="text-green-500 underline hover:text-lime-300 font-semibold"
+              className="text-lime-300 underline hover:text-lime-200 font-semibold"
             >
-              Calculadora
+              Ir a la calculadora
             </Link>
           </p>
         </div>

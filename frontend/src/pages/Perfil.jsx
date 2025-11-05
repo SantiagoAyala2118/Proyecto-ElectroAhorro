@@ -1,10 +1,11 @@
 import { useState } from 'react';
-import { useNavigate } from "react-router-dom";
+// import { useNavigate } from "react-router-dom";
 import { Sidebar } from "../components/layouts/SideBar"
 import Spline from '@splinetool/react-spline';
 
 export const UserProfile = () => {
-  const navigate = useNavigate();
+
+  // const navigate = useNavigate();
   const [activeSection, setActiveSection] = useState('profile');
 
   // Datos mock para demostración

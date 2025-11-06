@@ -13,11 +13,11 @@ export const Navbar = () => {
   };
 
   const handleGoToHome = () => {
-    navigate("/home");
+    navigate("/app");
   };
 
   const handleGoToProducts = () => {
-    navigate("/user/products");
+    navigate("/catalogo");
   };
 
   const handleGoToProfile = () => {

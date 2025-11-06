@@ -25,7 +25,7 @@ export const Navbar = () => {
   };
 
   const handleGoToSave = () => {
-    navigate("/save");
+    navigate("/energytips");
   };
 
   return (

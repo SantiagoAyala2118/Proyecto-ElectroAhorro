@@ -1,0 +1,20 @@
+/* @tailwind base;
+@tailwind components;
+@tailwind utilities; */
+
+@import "tailwindcss";
+
+/* Eliminar márgenes y padding globales */
+html,
+body,
+#root {
+  margin: 0 !important;
+  padding: 0 !important;
+  width: 100%;
+  overflow-x: hidden;
+}
+
+/* Forzar que el contenedor principal ocupe todo el ancho */
+.min-h-screen {
+  min-height: 100vh;
+}

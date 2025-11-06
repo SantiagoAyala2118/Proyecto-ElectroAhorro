@@ -6,7 +6,7 @@ import { createCalculationValidations } from "../middlewares/validations/calcula
 import { applyValidations } from "../middlewares/validator.js";
 
 //*--------------------------Controladores
-import { createCalculation } from "../controllers/calculator.controller.js";
+import { createCalculation, calculateEnergyConsumption } from "../controllers/calculator.controller.js";
 
 const calcRouter = Router();
 
@@ -18,5 +18,8 @@ calcRouter.post(
   applyValidations,
   createCalculation
 );
+
+//TODO CALCULAR CONSUMO ENERGÉTICO (RUTA PÚBLICA)
+calcRouter.post("/calculate", calculateEnergyConsumption);
 
 export default calcRouter;

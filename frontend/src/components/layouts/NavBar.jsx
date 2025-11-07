@@ -14,7 +14,7 @@ export const Navbar = () => {
   };
 
   const handleGoToHome = () => {
-    navigate("/home");
+    navigate("/app");
   };
 
   const handleGoToProducts = () => {
@@ -26,7 +26,7 @@ export const Navbar = () => {
   };
 
   const handleGoToSave = () => {
-    navigate("/save");
+    navigate("/energytips");
   };
 
   return (

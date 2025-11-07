@@ -6,6 +6,7 @@ import { App } from "../App.jsx";
 import { UserProfile } from "../pages/Perfil.jsx";
 import Calculadora from "../pages/Calculadora.jsx";
 import { CatalogoElectrodomesticos } from "../pages/Catalogo.jsx";
+import { EnergyTips } from "../pages/EnergyTips.jsx";
 
 // Se hace una constante router en donde se guardan todas las direcciones para ir navegando por los componentes
 export const router = createBrowserRouter([
@@ -15,6 +16,6 @@ export const router = createBrowserRouter([
   { path: "/calculator", element: <Calculadora /> },
   { path: "/user/profile", element: <UserProfile /> },
   { path: "/catalogo", element: <CatalogoElectrodomesticos /> },
-  { path: "/user/profile", element: <UserProfile /> },
-  { path: "/catalogo", element: <CatalogoElectrodomesticos /> },
+  { path: "/energytips", element: <EnergyTips /> },
+  { path: "*", element: <Registro /> },
 ]);

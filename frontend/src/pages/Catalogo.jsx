@@ -1,6 +1,7 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { useNavigate } from "react-router-dom";
-import { Navbar } from '../components/layouts/NavBar'; // Ajusta la ruta de importación según tu estructura
+import { Navbar } from '../components/layouts/NavBar';
+import { useElectrodomesticos } from '../hooks/useElectrodomesticos';
 
 // Importamos los iconos de React Icons que necesitamos
 import {
@@ -35,9 +36,30 @@ import {
     GiElectric
 } from 'react-icons/gi';
 
+// Función para obtener el componente de icono basado en el nombre
+const getIconComponent = (iconName, className = "") => {
+    const icons = {
+        // React Icons
+        FaHeart, FaRegHeart, FaEye, FaPlus, FaSnowflake, FaWifi, FaTv,
+        FaLightbulb, FaMobile, FaDesktop, FaBolt, FaTint, FaThermometerHalf,
+        FaWind, FaShieldAlt, FaMemory, FaBath, FaCoffee, FaUmbrellaBeach,
+
+        // Io Icons
+        IoMdSettings, IoMdWater, IoMdSpeedometer,
+
+        // Gi Icons
+        GiWashingMachine, GiKitchenScale, GiElectric
+    };
+
+    const IconComponent = icons[iconName];
+    return IconComponent ? <IconComponent className={className} /> : <FaBolt className={className} />;
+};
+
 export const CatalogoElectrodomesticos = () => {
     const navigate = useNavigate();
 
+    // Usamos el hook para obtener los electrodomésticos del backend
+    const { electrodomesticos, loading, error } = useElectrodomesticos();
 
     // Estado del componente
     const [likedProducts, setLikedProducts] = useState(new Set());
@@ -47,138 +69,6 @@ export const CatalogoElectrodomesticos = () => {
     const [toastMessage, setToastMessage] = useState('');
     const [selectedProduct, setSelectedProduct] = useState(null);
     const [showModal, setShowModal] = useState(false);
-
-    // Datos de ejemplo - electrodomésticos reales con iconos de React Icons
-    const electrodomesticos = [
-        {
-            id: 1,
-            name: "Refrigerador Samsung",
-            category: "cocina",
-            consumption: "alto",
-            brand: "Samsung",
-            model: "RT38K5932S8",
-            description: "Refrigerador side by side con tecnología Digital Inverter",
-            consumo: "120 kWh/mes",
-            icon: <GiKitchenScale className="text-6xl" />,
-            specs: [
-                { icon: <IoMdSettings className="text-[#90AFC5]" />, text: "Capacidad: 635L" },
-                { icon: <FaSnowflake className="text-[#90AFC5]" />, text: "Tecnología No Frost" },
-                { icon: <FaBolt className="text-[#90AFC5]" />, text: "Consumo: 120 kWh/mes" }
-            ]
-        },
-        {
-            id: 2,
-            name: "Lavadora LG",
-            category: "lavanderia",
-            consumption: "medio",
-            brand: "LG",
-            model: "F4V5RGP2S",
-            description: "Lavadora carga frontal con motor Direct Drive",
-            consumo: "45 kWh/mes",
-            icon: <GiWashingMachine className="text-6xl" />,
-            specs: [
-                { icon: <IoMdSettings className="text-[#90AFC5]" />, text: "Capacidad: 8kg" },
-                { icon: <IoMdWater className="text-[#90AFC5]" />, text: "A+++ Eficiencia" },
-                { icon: <FaBolt className="text-[#90AFC5]" />, text: "Consumo: 45 kWh/mes" }
-            ]
-        },
-        {
-            id: 3,
-            name: "Aire Acondicionado",
-            category: "climatizacion",
-            consumption: "alto",
-            brand: "Midea",
-            model: "MSMA-12CRN8",
-            description: "Aire acondicionado split inverter 12000 BTU",
-            consumo: "180 kWh/mes",
-            icon: <FaWind className="text-6xl" />,
-            specs: [
-                { icon: <FaThermometerHalf className="text-[#90AFC5]" />, text: "12000 BTU" },
-                { icon: <FaWifi className="text-[#90AFC5]" />, text: "WiFi Control" },
-                { icon: <FaBolt className="text-[#90AFC5]" />, text: "Consumo: 180 kWh/mes" }
-            ]
-        },
-        {
-            id: 4,
-            name: "Televisor OLED",
-            category: "entretenimiento",
-            consumption: "medio",
-            brand: "LG",
-            model: "OLED55C3PSA",
-            description: "Smart TV OLED 55\" 4K con WebOS",
-            consumo: "30 kWh/mes",
-            icon: <FaTv className="text-6xl" />,
-            specs: [
-                { icon: <FaDesktop className="text-[#90AFC5]" />, text: "55\" OLED 4K" },
-                { icon: <FaShieldAlt className="text-[#90AFC5]" />, text: "WebOS" },
-                { icon: <FaBolt className="text-[#90AFC5]" />, text: "Consumo: 30 kWh/mes" }
-            ]
-        },
-        {
-            id: 5,
-            name: "Microondas Panasonic",
-            category: "cocina",
-            consumption: "medio",
-            brand: "Panasonic",
-            model: "NN-ST67LS",
-            description: "Horno microondas con grill y 1100W de potencia",
-            consumo: "25 kWh/mes",
-            icon: <GiElectric className="text-6xl" />,
-            specs: [
-                { icon: <FaCoffee className="text-[#90AFC5]" />, text: "Grill Incorporado" },
-                { icon: <IoMdSpeedometer className="text-[#90AFC5]" />, text: "1100W" },
-                { icon: <FaBolt className="text-[#90AFC5]" />, text: "Consumo: 25 kWh/mes" }
-            ]
-        },
-        {
-            id: 6,
-            name: "Secadora Electrolux",
-            category: "lavanderia",
-            consumption: "alto",
-            brand: "Electrolux",
-            model: "LSE11",
-            description: "Secadora de ropa con bomba de calor y 11kg",
-            consumo: "85 kWh/mes",
-            icon: <FaUmbrellaBeach className="text-6xl" />,
-            specs: [
-                { icon: <FaBath className="text-[#90AFC5]" />, text: "Capacidad: 11kg" },
-                { icon: <FaTint className="text-[#90AFC5]" />, text: "Bomba de Calor" },
-                { icon: <FaBolt className="text-[#90AFC5]" />, text: "Consumo: 85 kWh/mes" }
-            ]
-        },
-        {
-            id: 7,
-            name: "Lámpara LED Smart",
-            category: "iluminacion",
-            consumption: "bajo",
-            brand: "Philips",
-            model: "Hue White",
-            description: "Bombilla LED inteligente control por app",
-            consumo: "5 kWh/mes",
-            icon: <FaLightbulb className="text-6xl" />,
-            specs: [
-                { icon: <FaLightbulb className="text-[#90AFC5]" />, text: "LED 9W" },
-                { icon: <FaMobile className="text-[#90AFC5]" />, text: "Control App" },
-                { icon: <FaBolt className="text-[#90AFC5]" />, text: "Consumo: 5 kWh/mes" }
-            ]
-        },
-        {
-            id: 8,
-            name: "Computadora All-in-One",
-            category: "oficina",
-            consumption: "medio",
-            brand: "HP",
-            model: "Pavilion 24-ca1010la",
-            description: "Computadora todo en uno con procesador Intel Core i5",
-            consumo: "40 kWh/mes",
-            icon: <FaDesktop className="text-6xl" />,
-            specs: [
-                { icon: <FaMemory className="text-[#90AFC5]" />, text: "8GB RAM, 512GB SSD" },
-                { icon: <FaDesktop className="text-[#90AFC5]" />, text: "23.8\" FHD" },
-                { icon: <FaBolt className="text-[#90AFC5]" />, text: "Consumo: 40 kWh/mes" }
-            ]
-        }
-    ];
 
     // Categorías para filtros
     const categorias = [
@@ -237,6 +127,38 @@ export const CatalogoElectrodomesticos = () => {
         const coincideConsumo = currentConsumption === 'all' || producto.consumption === currentConsumption;
         return coincideCategoria && coincideConsumo;
     });
+
+    // Estados de carga y error
+    if (loading) {
+        return (
+            <div className="min-h-screen bg-gradient-to-br from-[#90AFC5] to-[#336B87]">
+                <Navbar />
+                <div className="pt-[14vh] flex justify-center items-center h-64">
+                    <div className="text-white text-xl">Cargando electrodomésticos...</div>
+                </div>
+            </div>
+        );
+    }
+
+    if (error) {
+        return (
+            <div className="min-h-screen bg-gradient-to-br from-[#90AFC5] to-[#336B87]">
+                <Navbar />
+                <div className="pt-[14vh] flex justify-center items-center h-64">
+                    <div className="text-white text-xl">Error al cargar los electrodomésticos</div>
+                    <div className="text-white text-sm mt-4 text-center">
+                        <p>Verifica que el backend esté corriendo en http://localhost:4000</p>
+                        <button
+                            onClick={() => window.location.reload()}
+                            className="mt-2 px-4 py-2 bg-[#763626] text-white rounded-lg"
+                        >
+                            Reintentar
+                        </button>
+                    </div>
+                </div>
+            </div>
+        );
+    }
 
     return (
         <div className="min-h-screen bg-gradient-to-br from-[#90AFC5] to-[#336B87]">
@@ -309,7 +231,7 @@ export const CatalogoElectrodomesticos = () => {
                                 {/* Imagen del producto */}
                                 <div className="h-48 bg-gradient-to-br from-[#336B87] to-[#2A3132] flex items-center justify-center relative">
                                     <div className="text-white opacity-90">
-                                        {producto.icon}
+                                        {getIconComponent(producto.icon, "text-6xl")}
                                     </div>
 
                                     {/* Botón de like */}
@@ -335,7 +257,7 @@ export const CatalogoElectrodomesticos = () => {
                                         {producto.specs.map((spec, index) => (
                                             <div key={index} className="flex items-center space-x-2">
                                                 <div className="flex-shrink-0">
-                                                    {spec.icon}
+                                                    {getIconComponent(spec.icon, "text-[#90AFC5]")}
                                                 </div>
                                                 <span className="text-xs text-gray-700">{spec.text}</span>
                                             </div>
@@ -401,7 +323,7 @@ export const CatalogoElectrodomesticos = () => {
                                 <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                                     <div className="bg-gradient-to-br from-[#336B87] to-[#2A3132] rounded-lg h-48 flex items-center justify-center">
                                         <div className="text-white opacity-90">
-                                            {selectedProduct.icon}
+                                            {getIconComponent(selectedProduct.icon, "text-6xl")}
                                         </div>
                                     </div>
 
@@ -439,7 +361,7 @@ export const CatalogoElectrodomesticos = () => {
                                         {selectedProduct.specs.map((spec, index) => (
                                             <div key={index} className="flex items-center space-x-3">
                                                 <div className="flex-shrink-0">
-                                                    {spec.icon}
+                                                    {getIconComponent(spec.icon, "text-[#90AFC5]")}
                                                 </div>
                                                 <span className="text-gray-700">{spec.text}</span>
                                             </div>
@@ -485,3 +407,5 @@ export const CatalogoElectrodomesticos = () => {
     );
 };
 
+// Exportación adicional para compatibilidad
+export const Catalogo = CatalogoElectrodomesticos;

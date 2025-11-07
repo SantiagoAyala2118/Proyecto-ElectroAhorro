@@ -51,6 +51,7 @@ export default function Calculadora() {
       <section className="w-full max-w-5xl grid grid-cols-1 md:grid-cols-2 gap-8">
         <div className="bg-white rounded-2xl shadow-md p-8 md:p-8 border border-lime-100">
           <div className="flex items-center gap-3 mb-4">
+
             <svg
               className="w-6 h-6 text-slate-950"
               viewBox="0 0 24 24"

@@ -34,7 +34,7 @@ export const Login = () => {
 
         // Pequeño delay para mostrar la transición
         setTimeout(() => {
-          navigate("/app");
+          navigate("/home");
         }, 600);
       } else {
         setIsTransitioning(false);
@@ -65,7 +65,7 @@ export const Login = () => {
 
   // Generar estrellas aleatorias
   const [stars, setStars] = useState([]);
-  
+
   useEffect(() => {
     const generateStars = () => {
       const newStars = [];
@@ -77,12 +77,12 @@ export const Login = () => {
           size: Math.random() * 3 + 1,
           opacity: Math.random() * 0.8 + 0.2,
           animationDelay: Math.random() * 5,
-          animationDuration: Math.random() * 3 + 2
+          animationDuration: Math.random() * 3 + 2,
         });
       }
       setStars(newStars);
     };
-    
+
     generateStars();
   }, []);
 
@@ -91,16 +91,18 @@ export const Login = () => {
   };
 
   return (
-    <div 
-      className={`min-h-screen w-screen flex items-center justify-center p-0 m-0 fixed inset-0 overflow-hidden cursor-pointer space-background ${lightsOn ? '' : 'lights-off'} ${isTransitioning ? 'page-transition-out' : 'page-transition-in'}`}
+    <div
+      className={`min-h-screen w-screen flex items-center justify-center p-0 m-0 fixed inset-0 overflow-hidden cursor-pointer space-background ${
+        lightsOn ? "" : "lights-off"
+      } ${isTransitioning ? "page-transition-out" : "page-transition-in"}`}
       onClick={toggleLights}
     >
       {/* Fondo de estrellas */}
       <div className="absolute inset-0">
-        {stars.map(star => (
+        {stars.map((star) => (
           <div
             key={star.id}
-            className={`star twinkle-star ${lightsOn ? '' : 'lights-off'}`}
+            className={`star twinkle-star ${lightsOn ? "" : "lights-off"}`}
             style={{
               left: `${star.x}%`,
               top: `${star.y}%`,
@@ -108,7 +110,7 @@ export const Login = () => {
               height: `${star.size}px`,
               opacity: lightsOn ? star.opacity : star.opacity * 0.1,
               animationDuration: `${star.animationDuration}s`,
-              animationDelay: `${star.animationDelay}s`
+              animationDelay: `${star.animationDelay}s`,
             }}
           />
         ))}
@@ -116,7 +118,7 @@ export const Login = () => {
 
       {/* Planeta Tierra - Diferente posición para variar */}
       <div className="absolute top-1/2 right-1/4 transform -translate-y-1/2 translate-x-1/2">
-        <div className={`planet-earth ${lightsOn ? '' : 'lights-off'}`}>
+        <div className={`planet-earth ${lightsOn ? "" : "lights-off"}`}>
           {/* Continentes simulados */}
           <div className="continents">
             <div className="continent continent-1"></div>
@@ -124,32 +126,38 @@ export const Login = () => {
             <div className="continent continent-3"></div>
             <div className="continent continent-4"></div>
           </div>
-          
+
           {/* Nubes */}
-          <div className={`clouds ${lightsOn ? '' : 'lights-off'}`}>
+          <div className={`clouds ${lightsOn ? "" : "lights-off"}`}>
             <div className="cloud cloud-1"></div>
             <div className="cloud cloud-2"></div>
             <div className="cloud cloud-3"></div>
           </div>
 
           {/* Anillo orbital */}
-          <div className={`orbital-ring ${lightsOn ? '' : 'lights-off'}`}></div>
+          <div className={`orbital-ring ${lightsOn ? "" : "lights-off"}`}></div>
         </div>
       </div>
 
       {/* Satélites adicionales para hacerlo más interesante */}
-      <div className={`satellite satellite-1 ${lightsOn ? '' : 'lights-off'}`} style={{
-        top: '25%',
-        left: '20%'
-      }}></div>
-      
-      <div className={`satellite satellite-2 ${lightsOn ? '' : 'lights-off'}`} style={{
-        bottom: '30%',
-        right: '20%'
-      }}></div>
+      <div
+        className={`satellite satellite-1 ${lightsOn ? "" : "lights-off"}`}
+        style={{
+          top: "25%",
+          left: "20%",
+        }}
+      ></div>
+
+      <div
+        className={`satellite satellite-2 ${lightsOn ? "" : "lights-off"}`}
+        style={{
+          bottom: "30%",
+          right: "20%",
+        }}
+      ></div>
 
       {/* Formulario */}
-      <div 
+      <div
         className="relative z-10 w-full max-w-md form-container px-8 py-8 mx-4"
         onClick={(e) => e.stopPropagation()}
       >
@@ -161,13 +169,16 @@ export const Login = () => {
             Gestiona tu consumo eléctrico de forma inteligente
           </p>
           <p className="text-white/60 text-sm mt-3">
-            💡 Click en el espacio para {lightsOn ? 'apagar' : 'encender'} las luces
+            💡 Click en el espacio para {lightsOn ? "apagar" : "encender"} las
+            luces
           </p>
         </div>
 
         <div className="flex items-center my-6">
           <div className="flex-grow border-t border-lime-300/30"></div>
-          <span className="mx-4 text-lime-300 text-sm font-medium">Iniciar Sesión</span>
+          <span className="mx-4 text-lime-300 text-sm font-medium">
+            Iniciar Sesión
+          </span>
           <div className="flex-grow border-t border-lime-300/30"></div>
         </div>
 
@@ -203,11 +214,13 @@ export const Login = () => {
           <button
             type="submit"
             className={`w-full font-semibold py-3 px-4 rounded-lg submit-button text-lg ${
-              isTransitioning ? 'opacity-50 cursor-not-allowed' : 'hover:scale-105'
+              isTransitioning
+                ? "opacity-50 cursor-not-allowed"
+                : "hover:scale-105"
             }`}
             disabled={isTransitioning}
           >
-            {isTransitioning ? 'Iniciando sesión...' : 'Iniciar sesión'}
+            {isTransitioning ? "Iniciando sesión..." : "Iniciar sesión"}
           </button>
         </form>
 

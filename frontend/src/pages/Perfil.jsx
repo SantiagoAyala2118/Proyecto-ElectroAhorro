@@ -52,7 +52,7 @@ export const UserProfile = () => {
           <div className="bg-white/90 backdrop-blur-sm rounded-2xl p-8 mb-8 shadow-2xl">
             <div className="flex items-center justify-between">
               <div className="flex items-center space-x-6">
-                <div className="w-24 h-24 bg-gradient-to-br from-[#763626] to-[#2A3132] rounded-full flex items-center justify-center text-white text-3xl font-bold shadow-lg">
+                <div className="w-24 h-24 bg-gradient-to-br from-lime-400 to-blue-950 rounded-full flex items-center justify-center text-white text-3xl font-bold shadow-lg">
                   CR
                 </div>
                 <div>
@@ -64,7 +64,7 @@ export const UserProfile = () => {
                   </div>
                 </div>
               </div>
-              <button className="bg-[#763626] hover:bg-[#5a2a1d] text-white px-6 py-3 rounded-xl font-medium transition-all duration-300 transform hover:scale-105 shadow-lg">
+              <button className="bg-gradient-to-b from-lime-950 to-lime-400 hover:bg-blue-950 text-white px-6 py-3 rounded-xl font-medium transition-all duration-300 transform hover:scale-105 shadow-lg">
                 Editar Perfil
               </button>
             </div>
@@ -154,7 +154,7 @@ export const UserProfile = () => {
               {/* Tarjeta de Configuración Rápida */}
               <div className="bg-white/80 backdrop-blur-sm rounded-2xl p-6 shadow-xl">
                 <h2 className="text-2xl font-bold text-[#2A3132] mb-6 border-b-2 border-[#763626] pb-3">
-                  ⚙️ Configuración
+                  Configuración
                 </h2>
                 <div className="space-y-4">
                   <button className="w-full text-left p-4 bg-white/50 rounded-xl border border-white/30 hover:bg-white/70 transition-all duration-200">
@@ -175,7 +175,7 @@ export const UserProfile = () => {
               {/* Historial de Consumo Anual */}
               <div className="bg-white/80 backdrop-blur-sm rounded-2xl p-6 shadow-xl">
                 <h2 className="text-2xl font-bold text-[#2A3132] mb-6 border-b-2 border-[#763626] pb-3">
-                  📅 Historial Anual
+                  Historial Anual
                 </h2>
                 <div className="space-y-3">
                   {[2024, 2023, 2022].map((year) => (

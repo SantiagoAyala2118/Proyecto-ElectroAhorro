@@ -51,11 +51,8 @@ export default function Calculadora() {
       <section className="w-full max-w-5xl grid grid-cols-1 md:grid-cols-2 gap-8">
         <div className="bg-white rounded-2xl shadow-md p-8 md:p-8 border border-lime-100">
           <div className="flex items-center gap-3 mb-4">
-            <svg className="w-6 h-6 text-slate-800" viewBox="0 0 24 24" fill="none"/>
-              <path d="M3 12h18" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" />
-              <path d="M12 3v18" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" />
             <svg
-              className="w-6 h-6 text-slate-700"
+              className="w-6 h-6 text-slate-950"
               viewBox="0 0 24 24"
               fill="none"
             >
@@ -79,7 +76,8 @@ export default function Calculadora() {
             className="space-y-4"
             onSubmit={(e) => (handleSubmit(e), getFetch(stateForm))}
           >
-            <div>
+            <section className="h-72 overflow-auto">
+<div>
               <label className="block text-sm text-slate-950 mb-2">
                 Potencia del Electrodoméstico
               </label>
@@ -131,7 +129,7 @@ export default function Calculadora() {
             </div>
 
             <div>
-              <label className="block text-sm text-slate-600 mb-2">
+              <label className="block text-sm text-slate-950 mb-2">
                 Promedio de días al año
               </label>
               <input
@@ -149,7 +147,7 @@ export default function Calculadora() {
             </div>
 
             <div>
-              <label className="block text-sm text-slate-600 mb-2">
+              <label className="block text-sm text-slate-950 mb-2">
                 Precio por kWh
               </label>
               <input
@@ -165,6 +163,8 @@ export default function Calculadora() {
                 onChange={handleChange}
               />
             </div>
+            </section>
+            
 
             <div className="pt-2">
               <button
@@ -181,7 +181,7 @@ export default function Calculadora() {
         <div className="bg-white rounded-2xl shadow-lg p-6 md:p-8">
           <div className="flex items-center gap-3 mb-4">
             <svg
-              className="w-6 h-6 text-slate-700"
+              className="w-6 h-6 text-slate-950"
               viewBox="0 0 24 24"
               fill="none"
             >
@@ -193,7 +193,7 @@ export default function Calculadora() {
                 strokeLinejoin="round"
               />
             </svg>
-            <h2 className="text-xl font-bold text-slate-950">
+            <h2 className="text-xl font-bold text-slate-950 text-start">
               Electrodomésticos Comunes
             </h2>
           </div>
@@ -202,7 +202,8 @@ export default function Calculadora() {
             className="space-y-4"
             onSubmit={(e) => (handleSubmit(e), getFetch(stateForm))}
           >
-            <div>
+            <section className="h-72 overflow-auto">
+<div>
               <label className="block text-sm text-slate-950 mb-2">
                 Selecciona un electrodoméstico
               </label>
@@ -294,6 +295,8 @@ export default function Calculadora() {
                 onChange={handleChange}
               />
             </div>
+            </section>
+            
 
             <div className="pt-2">
               <button

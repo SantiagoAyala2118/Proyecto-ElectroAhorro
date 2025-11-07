@@ -68,3 +68,61 @@ export const createCalculation = async (req, res) => {
     });
   }
 };
+
+export const calculateEnergyConsumption = async (req, res) => {
+  try {
+    const { appliances } = req.body; // Array de {applianceId, hoursOfUse}
+
+    if (!appliances || !Array.isArray(appliances)) {
+      return res.status(400).json({
+        message: "Se requiere un array de electrodomésticos"
+      });
+    }
+
+    const results = {
+      appliances: [],
+      totals: {
+        daily: 0,
+        monthly: 0,
+        yearly: 0
+      }
+    };
+
+    // Calcular consumo para cada electrodoméstico
+    for (const item of appliances) {
+      const appliance = await ApplianceModel.findByPk(item.applianceId);
+
+      if (appliance) {
+        const hours = item.hoursOfUse || 1;
+        const dailyKwh = (appliance.potencia * hours) / 1000;
+        const monthlyKwh = dailyKwh * 30;
+        const yearlyKwh = dailyKwh * 365;
+
+        results.appliances.push({
+          id: appliance.id,
+          nombre: appliance.nombre,
+          potencia: appliance.potencia,
+          hoursUsed: hours,
+          dailyKwh,
+          monthlyKwh,
+          yearlyKwh
+        });
+
+        results.totals.daily += dailyKwh;
+        results.totals.monthly += monthlyKwh;
+        results.totals.yearly += yearlyKwh;
+      }
+    }
+
+    return res.status(200).json({
+      message: "Cálculo realizado exitosamente",
+      results
+    });
+
+  } catch (err) {
+    console.error("Error en cálculo de consumo", err);
+    return res.status(500).json({
+      message: "Error al calcular el consumo energético"
+    });
+  }
+};

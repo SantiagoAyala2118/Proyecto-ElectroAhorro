@@ -18,7 +18,7 @@ export const Navbar = () => {
   };
 
   const handleGoToProducts = () => {
-    navigate("/user/products");
+    navigate("/catalogo");
   };
 
   const handleGoToProfile = () => {

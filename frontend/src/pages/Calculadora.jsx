@@ -229,7 +229,10 @@ export default function Calculadora() {
                 <input
                   type="number"
                   placeholder="1000"
-                  className="flex-1 px-4 py-2 border border-slate-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-300"
+                  className="w-full px-4 py-2 rounded-lg border-2 border-transparent bg-white 
+           text-gray-900 focus:outline-none focus:ring-0 transition-all duration-300 
+           [background:linear-gradient(white,white)_padding-box,linear-gradient(to_right,#1e3a8a,#b6ff3b)_border-box] 
+           hover:[background:linear-gradient(white,white)_padding-box,linear-gradient(to_right,#b6ff3b,#162456)_border-box]"
                   aria-label="Potencia"
                   name="power"
                   value={stateForm.power}
@@ -239,7 +242,7 @@ export default function Calculadora() {
             </div>
 
             <div>
-              <label className="block text-sm text-slate-600 mb-2">
+              <label className="block text-sm text-slate-950 mb-2">
                 Horas de uso por día
               </label>
               <input
@@ -263,7 +266,10 @@ export default function Calculadora() {
               <input
                 type="number"
                 placeholder="247"
-                className="w-full px-4 py-2 border border-slate-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-300"
+                className="w-full px-4 py-2 rounded-lg border-2 border-transparent bg-white 
+           text-gray-900 focus:outline-none focus:ring-0 transition-all duration-300 
+           [background:linear-gradient(white,white)_padding-box,linear-gradient(to_right,#1e3a8a,#b6ff3b)_border-box] 
+           hover:[background:linear-gradient(white,white)_padding-box,linear-gradient(to_right,#b6ff3b,#162456)_border-box]"
                 aria-label="Cantidad de días"
                 name="days"
                 value={stateForm.days}
@@ -272,7 +278,7 @@ export default function Calculadora() {
             </div>
 
             <div>
-              <label className="block text-sm text-slate-600 mb-2">
+              <label className="block text-sm text-slate-950 mb-2">
                 Precio por kWh
               </label>
               <input

@@ -1,11 +1,10 @@
-import { useState } from 'react';
-// import { useNavigate } from "react-router-dom";
+import { useState, useEffect } from 'react';
+import { useNavigate } from "react-router-dom";
 import { Sidebar } from "../components/layouts/SideBar"
 import Spline from '@splinetool/react-spline';
 
 export const UserProfile = () => {
-
-  // const navigate = useNavigate();
+  const navigate = useNavigate();
   const [activeSection, setActiveSection] = useState('profile');
 
   // Datos mock para demostración
@@ -19,7 +18,7 @@ export const UserProfile = () => {
     monthlyConsumption: "245 kWh",
     annualConsumption: "2,940 kWh"
   };
-  
+
   //& Esto deberia ser un fetch a la base de datos de electrodomesticos (custom hook)
   const appliancesList = [
     { name: "Refrigerador", consumption: "85 kWh/mes", status: "Activo" },
@@ -38,6 +37,9 @@ export const UserProfile = () => {
     { month: "May", consumption: 265 },
     { month: "Jun", consumption: 340 },
   ];
+  const handleGoToProducts = () => {
+    navigate('/catalogo'); // Ajusta la ruta según tu configuración de rutas
+  };
 
   return (
     <div className="flex min-h-screen bg-gradient-to-br from-[#90AFC5] to-[#336B87]">
@@ -142,7 +144,7 @@ export const UserProfile = () => {
                     </div>
                   ))}
                 </div>
-                <button className="w-full mt-4 bg-[#336B87] hover:bg-[#2A3132] text-white py-3 rounded-xl font-medium transition-all duration-300 transform hover:scale-105">
+                <button className="w-full mt-4 bg-[#336B87] hover:bg-[#2A3132] text-white py-3 rounded-xl font-medium transition-all duration-300 transform hover:scale-105" onClick={handleGoToProducts}>
                   + Agregar Electrodoméstico
                 </button>
               </div>

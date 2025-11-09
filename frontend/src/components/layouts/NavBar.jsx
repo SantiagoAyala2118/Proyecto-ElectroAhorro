@@ -14,11 +14,11 @@ export const Navbar = () => {
   };
 
   const handleGoToHome = () => {
-    navigate("/app");
+    navigate("/home");
   };
 
   const handleGoToProducts = () => {
-    navigate("/catalogo");
+    navigate("/appliance/catalog");
   };
 
   const handleGoToProfile = () => {

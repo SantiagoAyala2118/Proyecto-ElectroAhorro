@@ -32,6 +32,8 @@ export const Login = () => {
         const data = await response.json();
         console.log("Inicio de sesión exitoso:", data);
 
+        localStorage.setItem("isLogged", "true");
+
         // Pequeño delay para mostrar la transición
         setTimeout(() => {
           navigate("/home");

@@ -160,7 +160,7 @@ export const Login = () => {
 
       {/* Formulario */}
       <div
-        className="relative z-10 w-full max-w-md form-container px-8 py-8 mx-4"
+        className="relative z-10 w-full max-w-md form-container px-8 py-4 mx-4"
         onClick={(e) => e.stopPropagation()}
       >
         <div className="text-center mb-8">

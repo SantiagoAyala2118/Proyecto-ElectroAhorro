@@ -4,29 +4,62 @@ import { Sidebar } from "../components/layouts/SideBar"
 import Spline from '@splinetool/react-spline';
 
 export const UserProfile = () => {
-  const navigate = useNavigate();
+  // const navigate = useNavigate();
   const [activeSection, setActiveSection] = useState('profile');
+  const [userData, setUserData] = useState(null);
+  const [appliancesList, setAppliancesList] = useState([]); // Cambiar a estado dinámico
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState('');
 
-  // Datos mock para demostración
-  //* Los datos de usuario en la base de datos
-  const userData = {
-    name: "Carlos Rodríguez",
-    email: "carlos.rodriguez@email.com",
-    location: "Madrid, España",
-    joinDate: "Enero 2024",
-    appliances: 8,
-    monthlyConsumption: "245 kWh",
-    annualConsumption: "2,940 kWh"
-  };
+  useEffect(() => {
+    const fetchUserData = async () => {
+      try {
+        setLoading(true);
+        console.log('Intentando obtener datos del usuario...');
+        const res = await fetch('http://localhost:4000/api/user/profile', {
+          credentials: 'include',
+        });
+        console.log('Respuesta del fetch:', res.status, res.statusText);
+        if (!res.ok) throw new Error('No se pudo obtener el usuario');
+        const data = await res.json();
+        console.log('Datos obtenidos:', data);
+        setUserData(data.user);
+      } catch (err) {
+        console.error('Error al cargar datos de usuario:', err);
+        setError('Error al cargar datos de usuario');
+      }
+    };
+
+    const fetchUserAppliances = async () => {
+      try {
+        console.log('Intentando obtener electrodomésticos del usuario...');
+        const res = await fetch('http://localhost:4000/api/user-appliances', {
+          credentials: 'include',
+        });
+        console.log('Respuesta de appliances:', res.status);
+        if (res.ok) {
+          const data = await res.json();
+          setAppliancesList(data.appliances || []);
+        }
+      } catch (err) {
+        console.error('Error obteniendo electrodomésticos del usuario:', err);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchUserData();
+    fetchUserAppliances();
+  }, []);
 
   //& Esto deberia ser un fetch a la base de datos de electrodomesticos (custom hook)
-  const appliancesList = [
-    { name: "Refrigerador", consumption: "85 kWh/mes", status: "Activo" },
-    { name: "Lavadora", consumption: "45 kWh/mes", status: "Activo" },
-    { name: "Aire Acondicionado", consumption: "120 kWh/mes", status: "Inactivo" },
-    { name: "Televisor", consumption: "30 kWh/mes", status: "Activo" },
-    { name: "Computadora", consumption: "25 kWh/mes", status: "Activo" },
-  ];
+  // const appliancesList = [
+  //   { name: "Refrigerador", consumption: "85 kWh/mes", status: "Activo" },
+  //   { name: "Lavadora", consumption: "45 kWh/mes", status: "Activo" },
+  //   { name: "Aire Acondicionado", consumption: "120 kWh/mes", status: "Inactivo" },
+  //   { name: "Televisor", consumption: "30 kWh/mes", status: "Activo" },
+  //   { name: "Computadora", consumption: "25 kWh/mes", status: "Activo" },
+  // ];
 
   //& Aqui iria la biblioteca de React de Graficos
   const monthlyData = [
@@ -55,14 +88,20 @@ export const UserProfile = () => {
             <div className="flex items-center justify-between">
               <div className="flex items-center space-x-6">
                 <div className="w-24 h-24 bg-gradient-to-br from-lime-400 to-blue-950 rounded-full flex items-center justify-center text-white text-3xl font-bold shadow-lg">
-                  CR
+                  {/* Iniciales del usuario */}
+                  {userData?.name
+                    ? userData.name.split(' ').map(n => n?.[0]).join('').toUpperCase()
+                    : '...'}
                 </div>
                 <div>
-                  <h1 className="text-4xl font-bold text-[#2A3132]">{userData.name}</h1>
-                  <p className="text-[#336B87] text-lg mt-1">{userData.email}</p>
+                  <h1 className="text-4xl font-bold text-[#2A3132]">
+                    {loading ? 'Cargando...' : error ? error : userData?.name}
+                  </h1>
+                  <p className="text-[#336B87] text-lg mt-1">
+                    {loading || error ? '' : userData?.email}
+                  </p>
                   <div className="flex space-x-4 mt-3 text-sm text-[#2A3132]">
-                    <span>📍 {userData.location}</span>
-                    <span>📅 Miembro desde {userData.joinDate}</span>
+                    <span>📅 Miembro desde {userData?.joinDate}</span>
                   </div>
                 </div>
               </div>
@@ -85,19 +124,19 @@ export const UserProfile = () => {
                 </h2>
                 <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
                   <div className="bg-gradient-to-br from-[#90AFC5] to-[#336B87] p-4 rounded-xl text-white text-center shadow-lg">
-                    <div className="text-2xl font-bold">{userData.monthlyConsumption}</div>
+                    <div className="text-2xl font-bold">{userData?.monthlyConsumption ?? '—'}</div>
                     <div className="text-sm opacity-90">Consumo Mensual</div>
                   </div>
                   <div className="bg-gradient-to-br from-[#763626] to-[#2A3132] p-4 rounded-xl text-white text-center shadow-lg">
-                    <div className="text-2xl font-bold">{userData.annualConsumption}</div>
+                    <div className="text-2xl font-bold">{userData?.annualConsumption ?? '—'}</div>
                     <div className="text-sm opacity-90">Consumo Anual</div>
                   </div>
                   <div className="bg-gradient-to-br from-[#336B87] to-[#2A3132] p-4 rounded-xl text-white text-center shadow-lg">
-                    <div className="text-2xl font-bold">{userData.appliances}</div>
+                    <div className="text-2xl font-bold">{userData?.appliances ?? '—'}</div>
                     <div className="text-sm opacity-90">Electrodomésticos</div>
                   </div>
                   <div className="bg-gradient-to-br from-[#90AFC5] to-[#763626] p-4 rounded-xl text-white text-center shadow-lg">
-                    <div className="text-2xl font-bold">$85.000</div>
+                    <div className="text-2xl font-bold">{userData?.estimatedCost ?? '—'}</div>
                     <div className="text-sm opacity-90">Costo Estimado</div>
                   </div>
                 </div>
@@ -132,14 +171,11 @@ export const UserProfile = () => {
                   {appliancesList.map((appliance, index) => (
                     <div key={index} className="flex justify-between items-center p-4 bg-white/50 rounded-xl border border-white/30">
                       <div>
-                        <h3 className="font-semibold text-[#2A3132]">{appliance.name}</h3>
-                        <p className="text-sm text-[#336B87]">{appliance.consumption}</p>
+                        <h3 className="font-semibold text-[#2A3132]">{appliance.Appliance?.nombre || 'Sin nombre'}</h3>
+                        <p className="text-sm text-[#336B87]">{appliance.Appliance?.consumo_promedio || 0} kWh</p>
                       </div>
-                      <span className={`px-3 py-1 rounded-full text-xs font-medium ${appliance.status === 'Activo'
-                        ? 'bg-green-100 text-green-800'
-                        : 'bg-red-100 text-red-800'
-                        }`}>
-                        {appliance.status}
+                      <span className="px-3 py-1 rounded-full text-xs font-medium bg-green-100 text-green-800">
+                        Activo
                       </span>
                     </div>
                   ))}

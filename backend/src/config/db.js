@@ -4,9 +4,11 @@ export const startDB = async () => {
   try {
     await sequelize.authenticate();
     console.log("Conexión exitosa a la Base de datos");
+
+    // Cambiar temporalmente para recrear tablas
     await sequelize.sync();
-    console.log("Sincronización existosa con la Base de datos");
+    console.log("Sincronización exitosa con la Base de datos");
   } catch (err) {
-    console.error("No se ha podido conectar con la Base de datos", err);
+    console.error("Error al conectar a la base de datos:", err);
   }
 };

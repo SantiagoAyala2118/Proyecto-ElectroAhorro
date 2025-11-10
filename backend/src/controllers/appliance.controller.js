@@ -15,6 +15,7 @@ export const createAppliance = async (req, res) => {
     await UserApplianceModel.create({
       appliance_id: appliance.id,
       user_id: userLogged.id,
+      horas_of_use: 1, // Valor por defecto
     });
 
     return res.status(201).json({
@@ -112,7 +113,7 @@ export const deleteAppliance = async (req, res) => {
 export const getAllPublicAppliances = async (req, res) => {
   try {
     const appliances = await ApplianceModel.findAll();
-    
+
     return res.status(200).json({
       message: "All appliances retrieved successfully",
       appliances,

@@ -29,10 +29,18 @@ export const Registro = () => {
         console.log("Registro exitoso:", responseData);
         navigate("/login");
       } else {
-        console.error("Error en el registro:", response.statusText);
+        const errorData = await response.json();
+        console.log("Error del backend:", errorData);
+        // Mostrar errores específicos si existen
+        if (errorData.errors && Array.isArray(errorData.errors)) {
+          setError(errorData.errors.map(e => e.msg).join(', '));
+        } else {
+          setError(errorData.message || "Error en el registro");
+        }
       }
     } catch (error) {
-      console.error("Error de conexión:", error);
+      console.error("Error en el registro:", error);
+      setError("Error en el registro");
     }
   };
 
@@ -40,7 +48,7 @@ export const Registro = () => {
 
   // Generar estrellas aleatorias
   const [stars, setStars] = useState([]);
-  
+
   useEffect(() => {
     const generateStars = () => {
       const newStars = [];
@@ -57,7 +65,7 @@ export const Registro = () => {
       }
       setStars(newStars);
     };
-    
+
     generateStars();
   }, []);
 
@@ -66,7 +74,7 @@ export const Registro = () => {
   };
 
   return (
-    <div 
+    <div
       className={`min-h-screen w-screen flex items-center justify-center p-0 m-0 fixed inset-0 overflow-hidden cursor-pointer space-background ${lightsOn ? '' : 'lights-off'}`}
       onClick={toggleLights}
     >
@@ -99,7 +107,7 @@ export const Registro = () => {
             <div className="continent continent-3"></div>
             <div className="continent continent-4"></div>
           </div>
-          
+
           {/* Nubes */}
           <div className={`clouds ${lightsOn ? '' : 'lights-off'}`}>
             <div className="cloud cloud-1"></div>
@@ -119,7 +127,7 @@ export const Registro = () => {
       }}></div>
 
       {/* Formulario */}
-      <div 
+      <div
         className="relative z-10 w-full max-w-md form-container px-6 py-6 mx-4"
         onClick={(e) => e.stopPropagation()}
       >

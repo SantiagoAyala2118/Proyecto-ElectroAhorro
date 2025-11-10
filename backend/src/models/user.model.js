@@ -14,6 +14,14 @@ export const UserModel = sequelize.define(
       type: DataTypes.STRING,
       // allowNull: false,
     },
+    person_id: {
+      type: DataTypes.INTEGER,
+      allowNull: false,
+      references: {
+        model: PersonModel,
+        key: "id",
+      },
+    },
   },
   {
     createdAt: false,

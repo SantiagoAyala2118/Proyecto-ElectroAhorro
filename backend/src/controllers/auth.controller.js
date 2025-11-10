@@ -7,10 +7,11 @@ import { generateToken } from "../helpers/jwt.helper.js";
 
 export const register = async (req, res) => {
   try {
-    // const { fullname, email, password, confirm_password } = req.body;
-
+    console.log("Datos crudos en req.body:", req.body);
     const validatedData = matchedData(req);
+    console.log("Datos validados:", validatedData);
     delete validatedData.confirm_password;
+    console.log("Datos después de delete:", validatedData);
 
     const hashedPassword = await hashPassword(validatedData.password);
 
@@ -18,19 +19,24 @@ export const register = async (req, res) => {
       full_name: validatedData.full_name,
     });
 
-    await UserModel.create({
+    const user = await UserModel.create({
       email: validatedData.email,
       password: hashedPassword,
       person_id: person.id,
     });
 
-    await ProfileModel.create(validatedData);
+    // Crear Profile con user_id
+    await ProfileModel.create({
+      user_id: user.id,
+      joinDate: new Date(),
+    });
 
     return res.status(201).json({
       message: "User registred",
     });
   } catch (err) {
-    console.error("Server error while registering", err);
+    console.error("Server error while registering:", err.message);
+    console.error("Stack:", err.stack);
     return res.status(500).json({
       message: "Server error while registering",
     });

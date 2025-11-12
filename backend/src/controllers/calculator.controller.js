@@ -1,6 +1,8 @@
 import { matchedData } from "express-validator";
 import { CalculationModel } from "../models/calculator.model.js";
 import { UserModel } from "../models/user.model.js";
+import { ApplianceModel } from "../models/appliance.model.js";
+import { MonthlyConsumptionModel } from "../models/monthlyConsumption.model.js"; // Nuevo import
 
 export const createCalculation = async (req, res) => {
   const { costPerKwh, powerUnity } = req.body;
@@ -75,7 +77,7 @@ export const calculateEnergyConsumption = async (req, res) => {
 
     if (!appliances || !Array.isArray(appliances)) {
       return res.status(400).json({
-        message: "Se requiere un array de electrodomésticos"
+        message: "Se requiere un array de electrodomésticos",
       });
     }
 
@@ -84,8 +86,8 @@ export const calculateEnergyConsumption = async (req, res) => {
       totals: {
         daily: 0,
         monthly: 0,
-        yearly: 0
-      }
+        yearly: 0,
+      },
     };
 
     // Calcular consumo para cada electrodoméstico
@@ -105,7 +107,7 @@ export const calculateEnergyConsumption = async (req, res) => {
           hoursUsed: hours,
           dailyKwh,
           monthlyKwh,
-          yearlyKwh
+          yearlyKwh,
         });
 
         results.totals.daily += dailyKwh;
@@ -114,15 +116,54 @@ export const calculateEnergyConsumption = async (req, res) => {
       }
     }
 
-    return res.status(200).json({
-      message: "Cálculo realizado exitosamente",
-      results
+    const tariff = 0.5; // Asumir tarifa fija; ajusta si es dinámica
+    const monthlyCost = results.totals.monthly * tariff;
+
+    // Guardar o actualizar el gasto del mes actual
+    const currentMonth = new Date().toISOString().slice(0, 7); // 'YYYY-MM'
+    const userId = req.userLogged?.id || 1; // Asumir userLogged; ajusta si no hay auth
+    await MonthlyConsumptionModel.upsert({
+      user_id: userId,
+      month: currentMonth,
+      cost: Math.round(monthlyCost),
     });
 
+    return res.status(200).json({
+      message: "Cálculo realizado exitosamente",
+      results,
+      monthlyCost: Math.round(monthlyCost),
+    });
   } catch (err) {
     console.error("Error en cálculo de consumo", err);
     return res.status(500).json({
-      message: "Error al calcular el consumo energético"
+      message: "Error al calcular el consumo energético",
     });
+  }
+};
+
+// Nueva función para obtener datos mensuales
+export const getMonthlyConsumption = async (req, res) => {
+  try {
+    const userId = req.userLogged?.id || 1; // Asumir userLogged
+    const data = await MonthlyConsumptionModel.findAll({
+      where: { user_id: userId },
+      order: [['month', 'ASC']],
+    });
+
+    const monthlyData = data.map(item => ({
+      month: item.month.split('-')[1], // Solo mes, e.g., '11' para noviembre
+      cost: item.cost,
+    }));
+
+    // Si no hay datos, empezar desde el mes actual con 0
+    if (monthlyData.length === 0) {
+      const currentMonth = new Date().getMonth() + 1; // 1-12
+      monthlyData.push({ month: currentMonth.toString().padStart(2, '0'), cost: 0 });
+    }
+
+    return res.status(200).json({ monthlyData });
+  } catch (err) {
+    console.error("Error obteniendo consumo mensual", err);
+    return res.status(500).json({ message: "Error al obtener datos mensuales" });
   }
 };

@@ -2,6 +2,8 @@ import { useState, useEffect } from 'react';
 import { useNavigate } from "react-router-dom";
 import { Sidebar } from "../components/layouts/SideBar"
 import Spline from '@splinetool/react-spline';
+// Update Recharts imports for LineChart
+import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer } from 'recharts';
 
 export const UserProfile = () => {
   // const navigate = useNavigate();
@@ -10,6 +12,22 @@ export const UserProfile = () => {
   const [appliancesList, setAppliancesList] = useState([]); // Cambiar a estado dinámico
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');
+  const [monthlyData, setMonthlyData] = useState([]); // Datos históricos mensuales
+  const tariff = 0.5; // Tarifa fija en pesos por kWh (ajusta según necesidad)
+
+  const fetchConsumptionData = async () => {
+    try {
+      const res = await fetch('http://localhost:4000/api/monthly-consumption', {
+        credentials: 'include',
+      });
+      if (res.ok) {
+        const data = await res.json();
+        setMonthlyData(data.monthlyData || []);
+      }
+    } catch (err) {
+      console.error('Error fetching monthly data:', err);
+    }
+  };
 
   useEffect(() => {
     const fetchUserData = async () => {
@@ -50,26 +68,35 @@ export const UserProfile = () => {
 
     fetchUserData();
     fetchUserAppliances();
-  }, []);
+  }, []); // Remove dependency to avoid loop
 
-  //& Esto deberia ser un fetch a la base de datos de electrodomesticos (custom hook)
-  // const appliancesList = [
-  //   { name: "Refrigerador", consumption: "85 kWh/mes", status: "Activo" },
-  //   { name: "Lavadora", consumption: "45 kWh/mes", status: "Activo" },
-  //   { name: "Aire Acondicionado", consumption: "120 kWh/mes", status: "Inactivo" },
-  //   { name: "Televisor", consumption: "30 kWh/mes", status: "Activo" },
-  //   { name: "Computadora", consumption: "25 kWh/mes", status: "Activo" },
-  // ];
+  // Separate useEffect for consumption calculation (ahora solo para actualizar el mes actual)
+  useEffect(() => {
+    if (appliancesList.length > 0) {
+      // Llamar al cálculo para actualizar el mes actual
+      fetch('http://localhost:4000/api/calculate', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          appliances: appliancesList.map(appliance => ({
+            applianceId: appliance.Appliance?.id,
+            hoursOfUse: 1
+          })).filter(item => item.applianceId)
+        }),
+        credentials: 'include',
+      }).then(() => fetchConsumptionData()); // Recargar datos después de calcular
+    }
+  }, [appliancesList]); // Only runs when appliancesList changes
 
   //& Aqui iria la biblioteca de React de Graficos
-  const monthlyData = [
-    { month: "Ene", consumption: 280 },
-    { month: "Feb", consumption: 245 },
-    { month: "Mar", consumption: 310 },
-    { month: "Abr", consumption: 195 },
-    { month: "May", consumption: 265 },
-    { month: "Jun", consumption: 340 },
-  ];
+  // const monthlyData = [
+  //   { month: "Ene", consumption: 280 },
+  //   { month: "Feb", consumption: 245 },
+  //   { month: "Mar", consumption: 310 },
+  //   { month: "Abr", consumption: 195 },
+  //   { month: "May", consumption: 265 },
+  //   { month: "Jun", consumption: 340 },
+  // ];
   const handleGoToProducts = () => {
     navigate('/catalogo'); // Ajusta la ruta según tu configuración de rutas
   };
@@ -142,24 +169,24 @@ export const UserProfile = () => {
                 </div>
               </div>
 
-              {/* Gráfico de Consumo Mensual */}
+              {/* Gráfico de Gasto Mensual */}
               <div className="bg-white/80 backdrop-blur-sm rounded-2xl p-6 shadow-xl">
                 <h2 className="text-2xl font-bold text-[#2A3132] mb-6 border-b-2 border-[#763626] pb-3">
-                  📈 Consumo Mensual
+                  📈 Gasto Mensual
                 </h2>
-                <div className="h-64 flex items-end justify-between space-x-2">
-                  {monthlyData.map((item, index) => (
-                    <div key={index} className="flex flex-col items-center flex-1">
-                      <div className="text-xs text-[#2A3132] mb-1">{item.month}</div>
-                      <div
-                        className="w-full bg-gradient-to-t from-[#763626] to-[#90AFC5] rounded-t-lg transition-all duration-500 hover:opacity-80 cursor-pointer"
-                        style={{ height: `${(item.consumption / 400) * 100}%` }}
-                        title={`${item.consumption} kWh`}
-                      ></div>
-                      <div className="text-xs text-[#2A3132] mt-1">{item.consumption}kWh</div>
-                    </div>
-                  ))}
-                </div>
+                {loading || monthlyData.length === 0 ? (
+                  <div className="h-64 flex items-center justify-center">Cargando gráfico...</div>
+                ) : (
+                  <ResponsiveContainer width="100%" height={256}>
+                    <LineChart data={monthlyData}>
+                      <CartesianGrid strokeDasharray="3 3" />
+                      <XAxis dataKey="month" />
+                      <YAxis />
+                      <Tooltip />
+                      <Line type="monotone" dataKey="cost" stroke="#763626" strokeWidth={2} />
+                    </LineChart>
+                  </ResponsiveContainer>
+                )}
               </div>
 
               {/* Lista de Electrodomésticos */}

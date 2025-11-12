@@ -6,7 +6,7 @@ import { createCalculationValidations } from "../middlewares/validations/calcula
 import { applyValidations } from "../middlewares/validator.js";
 
 //*--------------------------Controladores
-import { createCalculation, calculateEnergyConsumption } from "../controllers/calculator.controller.js";
+import { createCalculation, calculateEnergyConsumption, getMonthlyConsumption } from "../controllers/calculator.controller.js"; // Agregar getMonthlyConsumption
 
 const calcRouter = Router();
 
@@ -21,5 +21,12 @@ calcRouter.post(
 
 //TODO CALCULAR CONSUMO ENERGÉTICO (RUTA PÚBLICA)
 calcRouter.post("/calculate", calculateEnergyConsumption);
+
+// Nueva ruta para obtener consumo mensual
+calcRouter.get(
+  "/monthly-consumption",
+  authMiddleware,
+  getMonthlyConsumption
+); // Requiere auth si es privada
 
 export default calcRouter;

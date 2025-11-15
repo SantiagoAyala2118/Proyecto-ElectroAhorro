@@ -40,7 +40,7 @@ export const UserProfile = () => {
   ];
 
   return (
-    <div className="flex min-h-screen bg-gradient-to-r from-lime-300 via-lime-600 to-lime-800">
+    <div className="flex min-h-screen bg-slate-300">
       {/* Sidebar */}
       <Sidebar activeSection={activeSection} setActiveSection={setActiveSection} />
 

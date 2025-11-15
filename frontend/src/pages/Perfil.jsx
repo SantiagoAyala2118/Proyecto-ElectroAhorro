@@ -102,16 +102,16 @@ export const UserProfile = () => {
   };
 
   return (
-    <div className="flex min-h-screen bg-gradient-to-br from-[#90AFC5] to-[#336B87]">
+    <div className="flex min-h-screen bg-slate-300">
       {/* Sidebar */}
       <Sidebar activeSection={activeSection} setActiveSection={setActiveSection} />
 
       {/* Contenido Principal */}
-      <div className="ml-64 flex-1 p-8">
+      <div className="ml-64 flex-1 p-10">
         <div className="max-w-7xl mx-auto">
 
           {/* Header del Perfil */}
-          <div className="bg-white/90 backdrop-blur-sm rounded-2xl p-8 mb-8 shadow-2xl">
+          <div className="bg-white/90 rounded-2xl p-8 mb-10 shadow-xl border border-lime-200">
             <div className="flex items-center justify-between">
               <div className="flex items-center space-x-6">
                 <div className="w-24 h-24 bg-gradient-to-br from-lime-400 to-blue-950 rounded-full flex items-center justify-center text-white text-3xl font-bold shadow-lg">
@@ -132,7 +132,7 @@ export const UserProfile = () => {
                   </div>
                 </div>
               </div>
-              <button className="bg-gradient-to-b from-lime-950 to-lime-400 hover:bg-blue-950 text-white px-6 py-3 rounded-xl font-medium transition-all duration-300 transform hover:scale-105 shadow-lg">
+              <button className="bg-gradient-to-r from-lime-600 to-blue-950 hover:from-blue-950 hover:to-lime-600 text-white px-6 py-3 rounded-xl font-semibold transition-all duration-300 shadow-lg">
                 Editar Perfil
               </button>
             </div>
@@ -145,9 +145,9 @@ export const UserProfile = () => {
             <div className="xl:col-span-2 space-y-8">
 
               {/* Tarjeta de Estadísticas Rápidas */}
-              <div className="bg-white/80 backdrop-blur-sm rounded-2xl p-6 shadow-xl">
-                <h2 className="text-2xl font-bold text-[#2A3132] mb-6 border-b-2 border-[#763626] pb-3">
-                  📊 Resumen de Consumo
+              <div className="bg-white/90 rounded-2xl p-6 shadow-xl border border-lime-200">
+                <h2 className="text-2xl font-bold text-slate-950 mb-6 border-b-2 border-lime-400 pb-2">
+                  Resumen de Consumo
                 </h2>
                 <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
                   <div className="bg-gradient-to-br from-[#90AFC5] to-[#336B87] p-4 rounded-xl text-white text-center shadow-lg">
@@ -168,6 +168,7 @@ export const UserProfile = () => {
                   </div>
                 </div>
               </div>
+
 
               {/* Gráfico de Gasto Mensual */}
               <div className="bg-white/80 backdrop-blur-sm rounded-2xl p-6 shadow-xl">
@@ -191,12 +192,12 @@ export const UserProfile = () => {
 
               {/* Lista de Electrodomésticos */}
               <div className="bg-white/80 backdrop-blur-sm rounded-2xl p-6 shadow-xl">
-                <h2 className="text-2xl font-bold text-[#2A3132] mb-6 border-b-2 border-[#763626] pb-3">
-                  🔌 Mis Electrodomésticos
+                <h2 className="text-2xl font-bold text-slate-950 mb-6 border-b-2 border-lime-500 pb-3">
+                  Mis Electrodomésticos
                 </h2>
                 <div className="space-y-4">
                   {appliancesList.map((appliance, index) => (
-                    <div key={index} className="flex justify-between items-center p-4 bg-white/50 rounded-xl border border-white/30">
+                    <div key={index} className="flex justify-between items-center p-4 bg-white/55 rounded-xl border border-white/30">
                       <div>
                         <h3 className="font-semibold text-[#2A3132]">{appliance.Appliance?.nombre || 'Sin nombre'}</h3>
                         <p className="text-sm text-[#336B87]">{appliance.Appliance?.consumo_promedio || 0} kWh</p>
@@ -218,43 +219,43 @@ export const UserProfile = () => {
 
               {/* Tarjeta de Configuración Rápida */}
               <div className="bg-white/80 backdrop-blur-sm rounded-2xl p-6 shadow-xl">
-                <h2 className="text-2xl font-bold text-[#2A3132] mb-6 border-b-2 border-[#763626] pb-3">
-                  Configuración
+                <h2 className="text-2xl font-bold text-slate-950 mb-6 border-b-2 border-lime-400 pb-3">
+                    Configuración
                 </h2>
                 <div className="space-y-4">
                   <button className="w-full text-left p-4 bg-white/50 rounded-xl border border-white/30 hover:bg-white/70 transition-all duration-200">
-                    <div className="font-semibold text-[#2A3132]">Notificaciones</div>
-                    <div className="text-sm text-[#336B87]">Gestionar alertas de consumo</div>
+                    <div className="font-semibold text-slate-950">Notificaciones</div>
+                    <div className="text-sm text-blue-900">Gestionar alertas de consumo</div>
                   </button>
                   <button className="w-full text-left p-4 bg-white/50 rounded-xl border border-white/30 hover:bg-white/70 transition-all duration-200">
-                    <div className="font-semibold text-[#2A3132]">Privacidad</div>
-                    <div className="text-sm text-[#336B87]">Controlar datos compartidos</div>
+                    <div className="font-semibold text-slate-900">Privacidad</div>
+                    <div className="text-sm text-blue-950">Controlar datos compartidos</div>
                   </button>
                   <button className="w-full text-left p-4 bg-white/50 rounded-xl border border-white/30 hover:bg-white/70 transition-all duration-200">
-                    <div className="font-semibold text-[#2A3132]">Preferencias</div>
-                    <div className="text-sm text-[#336B87]">Personalizar experiencia</div>
+                    <div className="font-semibold text-slate-950">Preferencias</div>
+                    <div className="text-sm text-blue-900">Personalizar experiencia</div>
                   </button>
                 </div>
               </div>
 
               {/* Historial de Consumo Anual */}
               <div className="bg-white/80 backdrop-blur-sm rounded-2xl p-6 shadow-xl">
-                <h2 className="text-2xl font-bold text-[#2A3132] mb-6 border-b-2 border-[#763626] pb-3">
+                <h2 className="text-2xl font-bold text-slate-950 mb-6 border-b-2 border-lime-400 pb-3">
                   Historial Anual
                 </h2>
                 <div className="space-y-3">
                   {[2024, 2023, 2022].map((year) => (
                     <div key={year} className="flex justify-between items-center p-3 bg-white/50 rounded-lg">
-                      <span className="font-medium text-[#2A3132]">{year}</span>
-                      <span className="text-[#763626] font-bold">{(year === 2024 ? 29400 : year === 2023 ? 31200 : 28500).toLocaleString()} kWh</span>
+                      <span className="font-medium text-slate-950">{year}</span>
+                      <span className="text-blue-950 font-bold">{(year === 2024 ? 29400 : year === 2023 ? 31200 : 28500).toLocaleString()} kWh</span>
                     </div>
                   ))}
                 </div>
               </div>
 
               {/* Consejos de Ahorro */}
-              <div className="bg-gradient-to-br from-[#763626] to-[#2A3132] rounded-2xl p-6 shadow-xl text-white">
-                <h2 className="text-2xl font-bold mb-4">💡 Tips de Ahorro</h2>
+              <div className="bg-gradient-to-br from-green-700 to-blue-950 rounded-2xl p-6 shadow-xl text-white">
+                <h2 className="text-2xl font-bold mb-4">Tips de Ahorro</h2>
                 <ul className="space-y-2 text-sm">
                   <li className="flex items-start">
                     <span className="mr-2">•</span>

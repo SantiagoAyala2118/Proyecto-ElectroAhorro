@@ -210,7 +210,7 @@ export const CatalogoElectrodomesticos = () => {
     }
 
     return (
-        <div className="min-h-screen bg-gradient-to-br from-[#90AFC5] to-[#336B87]">
+        <div className="min-h-screen bg-slate-300">
             {/* Usamos tu componente Navbar personalizado */}
             <Navbar />
 

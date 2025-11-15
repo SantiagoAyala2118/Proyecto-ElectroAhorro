@@ -63,6 +63,7 @@ export const CatalogoElectrodomesticos = () => {
 
     // Estado del componente
     const [likedProducts, setLikedProducts] = useState(new Set());
+    const [addedToProfile, setAddedToProfile] = useState(new Set()); // Nuevo estado para electrodomésticos agregados al perfil
     const [currentCategory, setCurrentCategory] = useState('all');
     const [currentConsumption, setCurrentConsumption] = useState('all');
     const [showToast, setShowToast] = useState(false);
@@ -89,6 +90,25 @@ export const CatalogoElectrodomesticos = () => {
         { id: 'alto', name: 'Alto' }
     ];
 
+    // Obtener electrodomésticos del usuario al cargar
+    useEffect(() => {
+        const fetchUserAppliances = async () => {
+            try {
+                const res = await fetch('http://localhost:4000/api/user-appliances', {
+                    credentials: 'include',
+                });
+                if (res.ok) {
+                    const data = await res.json();
+                    const addedIds = new Set(data.appliances.map(ap => ap.appliance_id));
+                    setAddedToProfile(addedIds);
+                }
+            } catch (err) {
+                console.error('Error obteniendo electrodomésticos del usuario:', err);
+            }
+        };
+        fetchUserAppliances();
+    }, []);
+
     // Función para mostrar toast
     const mostrarToast = (mensaje) => {
         setToastMessage(mensaje);
@@ -96,7 +116,7 @@ export const CatalogoElectrodomesticos = () => {
         setTimeout(() => setShowToast(false), 3000);
     };
 
-    // Función para toggle like
+    // Función para toggle like (favoritos locales)
     const toggleLike = (productId) => {
         const nuevosLikes = new Set(likedProducts);
         if (nuevosLikes.has(productId)) {
@@ -109,16 +129,45 @@ export const CatalogoElectrodomesticos = () => {
         setLikedProducts(nuevosLikes);
     };
 
-    // Función para ver detalles (abre modal)
-    const verDetalles = (producto) => {
-        setSelectedProduct(producto);
-        setShowModal(true);
-    };
-
-    // Función para agregar al perfil
-    const agregarAlPerfil = (producto) => {
-        // Aquí iría la lógica para agregar al array del perfil
-        mostrarToast(`${producto.name} agregado a tu perfil`);
+    // Función para toggle agregar al perfil
+    const toggleAddToProfile = async (productId) => {
+        const isAdded = addedToProfile.has(productId);
+        try {
+            if (isAdded) {
+                // Quitar del perfil
+                const res = await fetch(`http://localhost:4000/api/user-appliances/${productId}`, {
+                    method: 'DELETE',
+                    credentials: 'include',
+                });
+                if (res.ok) {
+                    setAddedToProfile(prev => {
+                        const newSet = new Set(prev);
+                        newSet.delete(productId);
+                        return newSet;
+                    });
+                    mostrarToast('Eliminado del perfil');
+                } else {
+                    mostrarToast('Error al eliminar del perfil');
+                }
+            } else {
+                // Agregar al perfil
+                const res = await fetch('http://localhost:4000/api/user-appliances', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    credentials: 'include',
+                    body: JSON.stringify({ appliance_id: productId }),
+                });
+                if (res.ok) {
+                    setAddedToProfile(prev => new Set(prev).add(productId));
+                    mostrarToast('Agregado al perfil');
+                } else {
+                    mostrarToast('Error al agregar al perfil');
+                }
+            }
+        } catch (err) {
+            console.error('Error en toggleAddToProfile:', err);
+            mostrarToast('Error de conexión');
+        }
     };
 
     // Filtrar productos
@@ -242,6 +291,17 @@ export const CatalogoElectrodomesticos = () => {
                                         {likedProducts.has(producto.id) ?
                                             <FaHeart className="text-red-500" /> :
                                             <FaRegHeart className="text-gray-400" />
+                                        }
+                                    </button>
+
+                                    {/* Botón de agregar al perfil */}
+                                    <button
+                                        onClick={() => toggleAddToProfile(producto.id)}
+                                        className="absolute top-3 left-3 w-10 h-10 bg-white rounded-full flex items-center justify-center shadow-lg hover:scale-110 transition-transform duration-200"
+                                    >
+                                        {addedToProfile.has(producto.id) ?
+                                            <FaPlus className="text-green-500" /> :
+                                            <FaPlus className="text-gray-400" />
                                         }
                                     </button>
                                 </div>
@@ -372,13 +432,15 @@ export const CatalogoElectrodomesticos = () => {
                                 <div className="flex space-x-3 mt-6">
                                     <button
                                         onClick={() => {
-                                            agregarAlPerfil(selectedProduct);
+                                            toggleAddToProfile(selectedProduct.id);
                                             setShowModal(false);
                                         }}
                                         className="flex-1 py-3 rounded-lg font-medium flex items-center justify-center space-x-2 bg-[#763626] text-white hover:bg-[#5a2a1d] transition-colors duration-200"
                                     >
                                         <FaPlus />
-                                        <span>Agregar a Mi Perfil</span>
+                                        <span>
+                                            {addedToProfile.has(selectedProduct.id) ? 'Quitar del Perfil' : 'Agregar a Mi Perfil'}
+                                        </span>
                                     </button>
                                     <button
                                         onClick={() => toggleLike(selectedProduct.id)}

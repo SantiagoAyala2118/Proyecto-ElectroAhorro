@@ -2,41 +2,101 @@ import { useState, useEffect } from 'react';
 import { useNavigate } from "react-router-dom";
 import { Sidebar } from "../components/layouts/SideBar"
 import Spline from '@splinetool/react-spline';
+// Update Recharts imports for LineChart
+import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer } from 'recharts';
 
 export const UserProfile = () => {
-  const navigate = useNavigate();
+  // const navigate = useNavigate();
   const [activeSection, setActiveSection] = useState('profile');
+  const [userData, setUserData] = useState(null);
+  const [appliancesList, setAppliancesList] = useState([]); // Cambiar a estado dinámico
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState('');
+  const [monthlyData, setMonthlyData] = useState([]); // Datos históricos mensuales
+  const tariff = 0.5; // Tarifa fija en pesos por kWh (ajusta según necesidad)
 
-  // Datos mock para demostración
-  //* Los datos de usuario en la base de datos
-  const userData = {
-    name: "Carlos Rodríguez",
-    email: "carlos.rodriguez@email.com",
-    location: "Madrid, España",
-    joinDate: "Enero 2024",
-    appliances: 8,
-    monthlyConsumption: "245 kWh",
-    annualConsumption: "2,940 kWh"
+  const fetchConsumptionData = async () => {
+    try {
+      const res = await fetch('http://localhost:4000/api/monthly-consumption', {
+        credentials: 'include',
+      });
+      if (res.ok) {
+        const data = await res.json();
+        setMonthlyData(data.monthlyData || []);
+      }
+    } catch (err) {
+      console.error('Error fetching monthly data:', err);
+    }
   };
 
-  //& Esto deberia ser un fetch a la base de datos de electrodomesticos (custom hook)
-  const appliancesList = [
-    { name: "Refrigerador", consumption: "85 kWh/mes", status: "Activo" },
-    { name: "Lavadora", consumption: "45 kWh/mes", status: "Activo" },
-    { name: "Aire Acondicionado", consumption: "120 kWh/mes", status: "Inactivo" },
-    { name: "Televisor", consumption: "30 kWh/mes", status: "Activo" },
-    { name: "Computadora", consumption: "25 kWh/mes", status: "Activo" },
-  ];
+  useEffect(() => {
+    const fetchUserData = async () => {
+      try {
+        setLoading(true);
+        console.log('Intentando obtener datos del usuario...');
+        const res = await fetch('http://localhost:4000/api/user/profile', {
+          credentials: 'include',
+        });
+        console.log('Respuesta del fetch:', res.status, res.statusText);
+        if (!res.ok) throw new Error('No se pudo obtener el usuario');
+        const data = await res.json();
+        console.log('Datos obtenidos:', data);
+        setUserData(data.user);
+      } catch (err) {
+        console.error('Error al cargar datos de usuario:', err);
+        setError('Error al cargar datos de usuario');
+      }
+    };
+
+    const fetchUserAppliances = async () => {
+      try {
+        console.log('Intentando obtener electrodomésticos del usuario...');
+        const res = await fetch('http://localhost:4000/api/user-appliances', {
+          credentials: 'include',
+        });
+        console.log('Respuesta de appliances:', res.status);
+        if (res.ok) {
+          const data = await res.json();
+          setAppliancesList(data.appliances || []);
+        }
+      } catch (err) {
+        console.error('Error obteniendo electrodomésticos del usuario:', err);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchUserData();
+    fetchUserAppliances();
+  }, []); // Remove dependency to avoid loop
+
+  // Separate useEffect for consumption calculation (ahora solo para actualizar el mes actual)
+  useEffect(() => {
+    if (appliancesList.length > 0) {
+      // Llamar al cálculo para actualizar el mes actual
+      fetch('http://localhost:4000/api/calculate', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          appliances: appliancesList.map(appliance => ({
+            applianceId: appliance.Appliance?.id,
+            hoursOfUse: 1
+          })).filter(item => item.applianceId)
+        }),
+        credentials: 'include',
+      }).then(() => fetchConsumptionData()); // Recargar datos después de calcular
+    }
+  }, [appliancesList]); // Only runs when appliancesList changes
 
   //& Aqui iria la biblioteca de React de Graficos
-  const monthlyData = [
-    { month: "Ene", consumption: 280 },
-    { month: "Feb", consumption: 245 },
-    { month: "Mar", consumption: 310 },
-    { month: "Abr", consumption: 195 },
-    { month: "May", consumption: 265 },
-    { month: "Jun", consumption: 340 },
-  ];
+  // const monthlyData = [
+  //   { month: "Ene", consumption: 280 },
+  //   { month: "Feb", consumption: 245 },
+  //   { month: "Mar", consumption: 310 },
+  //   { month: "Abr", consumption: 195 },
+  //   { month: "May", consumption: 265 },
+  //   { month: "Jun", consumption: 340 },
+  // ];
   const handleGoToProducts = () => {
     navigate('/catalogo'); // Ajusta la ruta según tu configuración de rutas
   };
@@ -55,14 +115,20 @@ export const UserProfile = () => {
             <div className="flex items-center justify-between">
               <div className="flex items-center space-x-6">
                 <div className="w-24 h-24 bg-gradient-to-br from-lime-400 to-blue-950 rounded-full flex items-center justify-center text-white text-3xl font-bold shadow-lg">
-                  CR
+                  {/* Iniciales del usuario */}
+                  {userData?.name
+                    ? userData.name.split(' ').map(n => n?.[0]).join('').toUpperCase()
+                    : '...'}
                 </div>
                 <div>
-                  <h1 className="text-4xl font-bold text-[#2A3132]">{userData.name}</h1>
-                  <p className="text-[#336B87] text-lg mt-1">{userData.email}</p>
+                  <h1 className="text-4xl font-bold text-[#2A3132]">
+                    {loading ? 'Cargando...' : error ? error : userData?.name}
+                  </h1>
+                  <p className="text-[#336B87] text-lg mt-1">
+                    {loading || error ? '' : userData?.email}
+                  </p>
                   <div className="flex space-x-4 mt-3 text-sm text-[#2A3132]">
-                    <span>📍 {userData.location}</span>
-                    <span>📅 Miembro desde {userData.joinDate}</span>
+                    <span>📅 Miembro desde {userData?.joinDate}</span>
                   </div>
                 </div>
               </div>
@@ -85,42 +151,42 @@ export const UserProfile = () => {
                 </h2>
                 <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
                   <div className="bg-gradient-to-br from-[#90AFC5] to-[#336B87] p-4 rounded-xl text-white text-center shadow-lg">
-                    <div className="text-2xl font-bold">{userData.monthlyConsumption}</div>
+                    <div className="text-2xl font-bold">{userData?.monthlyConsumption ?? '—'}</div>
                     <div className="text-sm opacity-90">Consumo Mensual</div>
                   </div>
                   <div className="bg-gradient-to-br from-[#763626] to-[#2A3132] p-4 rounded-xl text-white text-center shadow-lg">
-                    <div className="text-2xl font-bold">{userData.annualConsumption}</div>
+                    <div className="text-2xl font-bold">{userData?.annualConsumption ?? '—'}</div>
                     <div className="text-sm opacity-90">Consumo Anual</div>
                   </div>
                   <div className="bg-gradient-to-br from-[#336B87] to-[#2A3132] p-4 rounded-xl text-white text-center shadow-lg">
-                    <div className="text-2xl font-bold">{userData.appliances}</div>
+                    <div className="text-2xl font-bold">{userData?.appliances ?? '—'}</div>
                     <div className="text-sm opacity-90">Electrodomésticos</div>
                   </div>
                   <div className="bg-gradient-to-br from-[#90AFC5] to-[#763626] p-4 rounded-xl text-white text-center shadow-lg">
-                    <div className="text-2xl font-bold">$85.000</div>
+                    <div className="text-2xl font-bold">{userData?.estimatedCost ?? '—'}</div>
                     <div className="text-sm opacity-90">Costo Estimado</div>
                   </div>
                 </div>
               </div>
 
-              {/* Gráfico de Consumo Mensual */}
+              {/* Gráfico de Gasto Mensual */}
               <div className="bg-white/80 backdrop-blur-sm rounded-2xl p-6 shadow-xl">
                 <h2 className="text-2xl font-bold text-[#2A3132] mb-6 border-b-2 border-[#763626] pb-3">
-                  📈 Consumo Mensual
+                  📈 Gasto Mensual
                 </h2>
-                <div className="h-64 flex items-end justify-between space-x-2">
-                  {monthlyData.map((item, index) => (
-                    <div key={index} className="flex flex-col items-center flex-1">
-                      <div className="text-xs text-[#2A3132] mb-1">{item.month}</div>
-                      <div
-                        className="w-full bg-gradient-to-t from-[#763626] to-[#90AFC5] rounded-t-lg transition-all duration-500 hover:opacity-80 cursor-pointer"
-                        style={{ height: `${(item.consumption / 400) * 100}%` }}
-                        title={`${item.consumption} kWh`}
-                      ></div>
-                      <div className="text-xs text-[#2A3132] mt-1">{item.consumption}kWh</div>
-                    </div>
-                  ))}
-                </div>
+                {loading || monthlyData.length === 0 ? (
+                  <div className="h-64 flex items-center justify-center">Cargando gráfico...</div>
+                ) : (
+                  <ResponsiveContainer width="100%" height={256}>
+                    <LineChart data={monthlyData}>
+                      <CartesianGrid strokeDasharray="3 3" />
+                      <XAxis dataKey="month" />
+                      <YAxis />
+                      <Tooltip />
+                      <Line type="monotone" dataKey="cost" stroke="#763626" strokeWidth={2} />
+                    </LineChart>
+                  </ResponsiveContainer>
+                )}
               </div>
 
               {/* Lista de Electrodomésticos */}
@@ -132,14 +198,11 @@ export const UserProfile = () => {
                   {appliancesList.map((appliance, index) => (
                     <div key={index} className="flex justify-between items-center p-4 bg-white/50 rounded-xl border border-white/30">
                       <div>
-                        <h3 className="font-semibold text-[#2A3132]">{appliance.name}</h3>
-                        <p className="text-sm text-[#336B87]">{appliance.consumption}</p>
+                        <h3 className="font-semibold text-[#2A3132]">{appliance.Appliance?.nombre || 'Sin nombre'}</h3>
+                        <p className="text-sm text-[#336B87]">{appliance.Appliance?.consumo_promedio || 0} kWh</p>
                       </div>
-                      <span className={`px-3 py-1 rounded-full text-xs font-medium ${appliance.status === 'Activo'
-                        ? 'bg-green-100 text-green-800'
-                        : 'bg-red-100 text-red-800'
-                        }`}>
-                        {appliance.status}
+                      <span className="px-3 py-1 rounded-full text-xs font-medium bg-green-100 text-green-800">
+                        Activo
                       </span>
                     </div>
                   ))}

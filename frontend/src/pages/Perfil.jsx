@@ -92,6 +92,30 @@ export const UserProfile = () => {
         if (res.ok) {
           const data = await res.json();
           setAppliancesList(data.appliances || []);
+
+          try {
+            // Llamada al endpoint que calcula y guarda (usa la opción que elegiste arriba)
+            const calcRes = await fetch(
+              "http://localhost:4000/api/calculate-and-save",
+              {
+                method: "POST",
+                credentials: "include",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({}), // siempre enviar JSON válido
+              }
+            );
+
+            const calcJson = await calcRes.json().catch(() => null);
+            console.log("calculate-and-save ->", calcRes.status, calcJson);
+          } catch (err) {
+            console.error(
+              "Error llamando calculate-and-save (no crítico):",
+              err
+            );
+          }
+
+          // 2) Actualizamos el historial en pantalla
+          await fetchConsumptionData();
         }
       } catch (err) {
         console.error("Error obteniendo electrodomésticos del usuario:", err);

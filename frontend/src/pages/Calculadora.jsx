@@ -51,7 +51,6 @@ export default function Calculadora() {
       <section className="w-full max-w-5xl grid grid-cols-1 md:grid-cols-2 gap-8">
         <div className="bg-white rounded-2xl shadow-md p-8 md:p-8 border border-lime-100">
           <div className="flex items-center gap-3 mb-4">
-
             <svg
               className="w-6 h-6 text-slate-950"
               viewBox="0 0 24 24"
@@ -78,94 +77,93 @@ export default function Calculadora() {
             onSubmit={(e) => (handleSubmit(e), getFetch(stateForm))}
           >
             <section className="h-72 overflow-auto">
-<div>
-              <label className="block text-sm text-slate-950 mb-2">
-                Potencia del Electrodoméstico
-              </label>
-              <div className="flex gap-3">
+              <div>
+                <label className="block text-sm text-slate-950 mb-2">
+                  Potencia del Electrodoméstico
+                </label>
+                <div className="flex gap-3">
+                  <input
+                    type="number"
+                    placeholder="1000"
+                    className="flex-1 px-4 py-2 rounded-lg border-2 border-transparent bg-white 
+           text-gray-900 focus:outline-none focus:ring-0 transition-all duration-300 
+           [background:linear-gradient(white,white)_padding-box,linear-gradient(to_right,#1e3a8a,#b6ff3b)_border-box] 
+           hover:[background:linear-gradient(white,white)_padding-box,linear-gradient(to_right,#b6ff3b,#162456)_border-box]"
+                    aria-label="Potencia"
+                    name="power"
+                    value={stateForm.power}
+                    onChange={handleChange}
+                  />
+                  <select
+                    className="w-36 px-4 py-2 rounded-lg border-2 border-transparent bg-white 
+           text-gray-900 focus:outline-none focus:ring-0 transition-all duration-300 
+           [background:linear-gradient(white,white)_padding-box,linear-gradient(to_right,#1e3a8a,#b6ff3b)_border-box] 
+           hover:[background:linear-gradient(white,white)_padding-box,linear-gradient(to_right,#b6ff3b,#162456)_border-box]"
+                    aria-label="Unidad de potencia"
+                    defaultValue="W"
+                    name="powerUnity"
+                    onChange={handleChange}
+                  >
+                    <option value="W">Watts (W)</option>
+                    <option value="kW">Kilowatts (kW)</option>
+                  </select>
+                </div>
+              </div>
+
+              <div>
+                <label className="block text-sm text-slate-950 mb-2">
+                  Horas de uso por día
+                </label>
                 <input
                   type="number"
-                  placeholder="1000"
-                  className="flex-1 px-4 py-2 rounded-lg border-2 border-transparent bg-white 
+                  placeholder="8"
+                  className="w-full px-4 py-2 rounded-lg border-2 border-transparent bg-white 
            text-gray-900 focus:outline-none focus:ring-0 transition-all duration-300 
            [background:linear-gradient(white,white)_padding-box,linear-gradient(to_right,#1e3a8a,#b6ff3b)_border-box] 
            hover:[background:linear-gradient(white,white)_padding-box,linear-gradient(to_right,#b6ff3b,#162456)_border-box]"
-                  aria-label="Potencia"
-                  name="power"
-                  value={stateForm.power}
+                  aria-label="Horas por dia"
+                  name="hours_per_day"
+                  value={stateForm.hours_per_day}
                   onChange={handleChange}
                 />
-                <select
-                  className="w-36 px-4 py-2 rounded-lg border-2 border-transparent bg-white 
-           text-gray-900 focus:outline-none focus:ring-0 transition-all duration-300 
-           [background:linear-gradient(white,white)_padding-box,linear-gradient(to_right,#1e3a8a,#b6ff3b)_border-box] 
-           hover:[background:linear-gradient(white,white)_padding-box,linear-gradient(to_right,#b6ff3b,#162456)_border-box]"
-                  aria-label="Unidad de potencia"
-                  defaultValue="W"
-                  name="powerUnity"
-                  onChange={handleChange}
-                >
-                  <option value="W">Watts (W)</option>
-                  <option value="kW">Kilowatts (kW)</option>
-                </select>
               </div>
-            </div>
 
-            <div>
-              <label className="block text-sm text-slate-950 mb-2">
-                Horas de uso por día
-              </label>
-              <input
-                type="number"
-                placeholder="8"
-                className="w-full px-4 py-2 rounded-lg border-2 border-transparent bg-white 
+              <div>
+                <label className="block text-sm text-slate-950 mb-2">
+                  Promedio de días al año
+                </label>
+                <input
+                  type="number"
+                  placeholder="247"
+                  className="w-full px-4 py-2 rounded-lg border-2 border-transparent bg-white 
            text-gray-900 focus:outline-none focus:ring-0 transition-all duration-300 
            [background:linear-gradient(white,white)_padding-box,linear-gradient(to_right,#1e3a8a,#b6ff3b)_border-box] 
            hover:[background:linear-gradient(white,white)_padding-box,linear-gradient(to_right,#b6ff3b,#162456)_border-box]"
-                aria-label="Horas por dia"
-                name="hours_per_day"
-                value={stateForm.hours_per_day}
-                onChange={handleChange}
-              />
-            </div>
+                  aria-label="Cantidad de días"
+                  name="days"
+                  value={stateForm.days}
+                  onChange={handleChange}
+                />
+              </div>
 
-            <div>
-              <label className="block text-sm text-slate-950 mb-2">
-                Promedio de días al año
-              </label>
-              <input
-                type="number"
-                placeholder="247"
-                className="w-full px-4 py-2 rounded-lg border-2 border-transparent bg-white 
+              <div>
+                <label className="block text-sm text-slate-950 mb-2">
+                  Precio por kWh
+                </label>
+                <input
+                  type="number"
+                  placeholder="144.50"
+                  className="w-full px-4 py-2 rounded-lg border-2 border-transparent bg-white 
            text-gray-900 focus:outline-none focus:ring-0 transition-all duration-300 
            [background:linear-gradient(white,white)_padding-box,linear-gradient(to_right,#1e3a8a,#b6ff3b)_border-box] 
            hover:[background:linear-gradient(white,white)_padding-box,linear-gradient(to_right,#b6ff3b,#162456)_border-box]"
-                aria-label="Cantidad de días"
-                name="days"
-                value={stateForm.days}
-                onChange={handleChange}
-              />
-            </div>
-
-            <div>
-              <label className="block text-sm text-slate-950 mb-2">
-                Precio por kWh
-              </label>
-              <input
-                type="number"
-                placeholder="0.15"
-                className="w-full px-4 py-2 rounded-lg border-2 border-transparent bg-white 
-           text-gray-900 focus:outline-none focus:ring-0 transition-all duration-300 
-           [background:linear-gradient(white,white)_padding-box,linear-gradient(to_right,#1e3a8a,#b6ff3b)_border-box] 
-           hover:[background:linear-gradient(white,white)_padding-box,linear-gradient(to_right,#b6ff3b,#162456)_border-box]"
-                aria-label="Precio kWh"
-                name="costPerKwh"
-                value={stateForm.costPerKwh}
-                onChange={handleChange}
-              />
-            </div>
+                  aria-label="Precio kWh"
+                  name="costPerKwh"
+                  value={stateForm.costPerKwh}
+                  onChange={handleChange}
+                />
+              </div>
             </section>
-            
 
             <div className="pt-2">
               <button
@@ -204,100 +202,99 @@ export default function Calculadora() {
             onSubmit={(e) => (handleSubmit(e), getFetch(stateForm))}
           >
             <section className="h-72 overflow-auto">
-<div>
-              <label className="block text-sm text-slate-950 mb-2">
-                Selecciona un electrodoméstico
-              </label>
-              <select
-                className="w-full px-4 py-2 rounded-lg border-2 border-transparent bg-white 
-           text-gray-900 focus:outline-none focus:ring-0 transition-all duration-300 
-           [background:linear-gradient(white,white)_padding-box,linear-gradient(to_right,#1e3a8a,#b6ff3b)_border-box] 
-           hover:[background:linear-gradient(white,white)_padding-box,linear-gradient(to_right,#b6ff3b,#162456)_border-box]"
-                aria-label="Electrodoméstico"
-                defaultValue=""
-              >
-                <option value="">-- Selecciona --</option>
-                <option value="fridge">Nevera</option>
-                <option value="tv">Televisor</option>
-                <option value="washer">Lavarropas</option>
-              </select>
-            </div>
-
-            <div>
-              <label className="block text-sm text-slate-950 mb-2">
-                Potencia del Electrodoméstico (Kwh)
-              </label>
-              <div className="flex gap-3">
-                <input
-                  type="number"
-                  placeholder="1000"
+              <div>
+                <label className="block text-sm text-slate-950 mb-2">
+                  Selecciona un electrodoméstico
+                </label>
+                <select
                   className="w-full px-4 py-2 rounded-lg border-2 border-transparent bg-white 
            text-gray-900 focus:outline-none focus:ring-0 transition-all duration-300 
            [background:linear-gradient(white,white)_padding-box,linear-gradient(to_right,#1e3a8a,#b6ff3b)_border-box] 
            hover:[background:linear-gradient(white,white)_padding-box,linear-gradient(to_right,#b6ff3b,#162456)_border-box]"
-                  aria-label="Potencia"
-                  name="power"
-                  value={stateForm.power}
+                  aria-label="Electrodoméstico"
+                  defaultValue=""
+                >
+                  <option value="">-- Selecciona --</option>
+                  <option value="fridge">Nevera</option>
+                  <option value="tv">Televisor</option>
+                  <option value="washer">Lavarropas</option>
+                </select>
+              </div>
+
+              <div>
+                <label className="block text-sm text-slate-950 mb-2">
+                  Potencia del Electrodoméstico (Kwh)
+                </label>
+                <div className="flex gap-3">
+                  <input
+                    type="number"
+                    placeholder="1000"
+                    className="w-full px-4 py-2 rounded-lg border-2 border-transparent bg-white 
+           text-gray-900 focus:outline-none focus:ring-0 transition-all duration-300 
+           [background:linear-gradient(white,white)_padding-box,linear-gradient(to_right,#1e3a8a,#b6ff3b)_border-box] 
+           hover:[background:linear-gradient(white,white)_padding-box,linear-gradient(to_right,#b6ff3b,#162456)_border-box]"
+                    aria-label="Potencia"
+                    name="power"
+                    value={stateForm.power}
+                    onChange={handleChange}
+                  />
+                </div>
+              </div>
+
+              <div>
+                <label className="block text-sm text-slate-950 mb-2">
+                  Horas de uso por día
+                </label>
+                <input
+                  type="text"
+                  placeholder="8"
+                  className="w-full px-4 py-2 rounded-lg border-2 border-transparent bg-white 
+           text-gray-900 focus:outline-none focus:ring-0 transition-all duration-300 
+           [background:linear-gradient(white,white)_padding-box,linear-gradient(to_right,#1e3a8a,#b6ff3b)_border-box] 
+           hover:[background:linear-gradient(white,white)_padding-box,linear-gradient(to_right,#b6ff3b,#162456)_border-box]"
+                  aria-label="Horas uso (comunes) "
+                  name="hours_per_day"
+                  value={stateForm.hours_per_day}
                   onChange={handleChange}
                 />
               </div>
-            </div>
 
-            <div>
-              <label className="block text-sm text-slate-950 mb-2">
-                Horas de uso por día
-              </label>
-              <input
-                type="text"
-                placeholder="8"
-                className="w-full px-4 py-2 rounded-lg border-2 border-transparent bg-white 
+              <div>
+                <label className="block text-sm text-slate-950 mb-2">
+                  Promedio de días al año
+                </label>
+                <input
+                  type="number"
+                  placeholder="247"
+                  className="w-full px-4 py-2 rounded-lg border-2 border-transparent bg-white 
            text-gray-900 focus:outline-none focus:ring-0 transition-all duration-300 
            [background:linear-gradient(white,white)_padding-box,linear-gradient(to_right,#1e3a8a,#b6ff3b)_border-box] 
            hover:[background:linear-gradient(white,white)_padding-box,linear-gradient(to_right,#b6ff3b,#162456)_border-box]"
-                aria-label="Horas uso (comunes) "
-                name="hours_per_day"
-                value={stateForm.hours_per_day}
-                onChange={handleChange}
-              />
-            </div>
+                  aria-label="Cantidad de días"
+                  name="days"
+                  value={stateForm.days}
+                  onChange={handleChange}
+                />
+              </div>
 
-            <div>
-              <label className="block text-sm text-slate-950 mb-2">
-                Promedio de días al año
-              </label>
-              <input
-                type="number"
-                placeholder="247"
-                className="w-full px-4 py-2 rounded-lg border-2 border-transparent bg-white 
+              <div>
+                <label className="block text-sm text-slate-950 mb-2">
+                  Precio por kWh
+                </label>
+                <input
+                  type="text"
+                  placeholder="0.15"
+                  className="w-full px-4 py-2 rounded-lg border-2 border-transparent bg-white 
            text-gray-900 focus:outline-none focus:ring-0 transition-all duration-300 
            [background:linear-gradient(white,white)_padding-box,linear-gradient(to_right,#1e3a8a,#b6ff3b)_border-box] 
            hover:[background:linear-gradient(white,white)_padding-box,linear-gradient(to_right,#b6ff3b,#162456)_border-box]"
-                aria-label="Cantidad de días"
-                name="days"
-                value={stateForm.days}
-                onChange={handleChange}
-              />
-            </div>
-
-            <div>
-              <label className="block text-sm text-slate-950 mb-2">
-                Precio por kWh
-              </label>
-              <input
-                type="text"
-                placeholder="0.15"
-                className="w-full px-4 py-2 rounded-lg border-2 border-transparent bg-white 
-           text-gray-900 focus:outline-none focus:ring-0 transition-all duration-300 
-           [background:linear-gradient(white,white)_padding-box,linear-gradient(to_right,#1e3a8a,#b6ff3b)_border-box] 
-           hover:[background:linear-gradient(white,white)_padding-box,linear-gradient(to_right,#b6ff3b,#162456)_border-box]"
-                aria-label="Precio kWh (comunes)"
-                name="costPerKwh"
-                value={stateForm.costPerKwh}
-                onChange={handleChange}
-              />
-            </div>
+                  aria-label="Precio kWh (comunes)"
+                  name="costPerKwh"
+                  value={stateForm.costPerKwh}
+                  onChange={handleChange}
+                />
+              </div>
             </section>
-            
 
             <div className="pt-2">
               <button
@@ -325,7 +322,7 @@ export default function Calculadora() {
             <ul className="text-sm text-start text-slate-950 list-disc list-inside space-y-2">
               <li>1 kW = 1,000 W</li>
               <li>1 kWh = 1 kW usado durante 1 hora</li>
-              <li>Precio promedio en España: €0.15/kWh</li>
+              <li>Precio promedio en Argentina: $144.32/kWh</li>
             </ul>
           </div>
 

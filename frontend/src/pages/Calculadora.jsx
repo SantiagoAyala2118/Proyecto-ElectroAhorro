@@ -2,6 +2,7 @@ import { useNavigate } from "react-router-dom";
 import { Navbar } from "../components/layouts/NavBar";
 import { useFetch } from "../hooks/useFetch";
 import { useForm } from "../hooks/useForm";
+import { useState } from "react";
 
 export default function Calculadora() {
   //* NAVEGACIÓN
@@ -16,8 +17,129 @@ export default function Calculadora() {
     hours_per_day: "",
     days: "",
     costPerKwh: "",
-    powerUnity: "",
+    powerUnity: "W",
   });
+
+  // --- INICIO PARCHÉ: estado y funciones para mantener estilos intactos ---
+  const [calcResult, setCalcResult] = useState(null);
+  const [calcLoading, setCalcLoading] = useState(false);
+  const [calcError, setCalcError] = useState("");
+
+  // Esta función reemplaza la llamada original getFetch(stateForm)
+  // Mantiene también tu handleSubmit (para que haga validaciones locales que ya tengas)
+  const handleSubmitAndFetch = async (e) => {
+    if (e && typeof e.preventDefault === "function") e.preventDefault();
+
+    // Llamar a tu manejador de formulario original (para mantener lo que hace useForm)
+    try {
+      // Si handleSubmit es síncrono y ya previene, lo llamamos:
+      if (typeof handleSubmit === "function") {
+        handleSubmit(e);
+      }
+    } catch (err) {
+      // no interrumpir si handleSubmit lanza (pero lo logueamos)
+      console.warn("handleSubmit threw:", err);
+    }
+
+    // Ahora hacemos la petición real al backend con el contenido del form
+    setCalcLoading(true);
+    setCalcError("");
+
+    //* VALIDACIONES DENTRO DEL FORMULARIO
+    // Construir payload normalizado
+    const payload = {
+      power: Number(stateForm.power),
+      hours_per_day: Number(stateForm.hours_per_day),
+      days: Number(stateForm.days),
+      costPerKwh: Number(stateForm.costPerKwh),
+      powerUnity: String(stateForm.powerUnity || "W").toUpperCase(),
+    };
+
+    // Validaciones rápidas
+    if (!Number.isFinite(payload.power) || payload.power <= 0) {
+      setCalcError("Ingresá una potencia válida (>0).");
+      setCalcLoading(false);
+      return;
+    }
+    if (!Number.isFinite(payload.hours_per_day) || payload.hours_per_day <= 0) {
+      setCalcError("Ingresá horas por día válidas (>0).");
+      setCalcLoading(false);
+      return;
+    }
+    if (!Number.isFinite(payload.days) || payload.days <= 0) {
+      setCalcError("Ingresá días válidos (>0).");
+      setCalcLoading(false);
+      return;
+    }
+    if (!Number.isFinite(payload.costPerKwh) || payload.costPerKwh < 0) {
+      setCalcError("Ingresá un precio por kWh válido (>=0).");
+      setCalcLoading(false);
+      return;
+    }
+
+    try {
+      const res = await fetch("http://localhost:4000/api/calculator", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        credentials: "include",
+        body: JSON.stringify(payload), // tu useForm deja los datos en stateForm
+      });
+
+      if (!res.ok) {
+        const txt = await res.text().catch(() => null);
+        setCalcError("Error servidor: " + (txt || res.status));
+        setCalcResult(null);
+        setCalcLoading(false);
+        return;
+      }
+
+      const json = await res.json();
+      // Normalizamos la respuesta a la forma que usamos para graficar en el perfil:
+      // json.dailyData  => array de { date: 'YYYY-MM-DD', kwh: num }
+      // json.summary => { total_consumption, cost }
+      setCalcResult({
+        dailyData: json.dailyData || json.data?.dailyData || [],
+        summary: json.summary ||
+          json.data?.summary || { total_consumption: 0, cost: 0 },
+        raw: json,
+      });
+    } catch (err) {
+      console.error("Error en fetch calculadora:", err);
+      setCalcError("Error de red al comunicarse con el servidor");
+      setCalcResult(null);
+    } finally {
+      setCalcLoading(false);
+    }
+  };
+
+  // // Función para guardar el cálculo en el perfil (usa endpoint ya creado)
+  // const handleSaveToProfile = async () => {
+  //   if (!calcResult) {
+  //     alert("Primero realizá un cálculo.");
+  //     return;
+  //   }
+  //   setCalcLoading(true);
+  //   try {
+  //     const res = await fetch("http://localhost:4000/api/calculate-and-save", {
+  //       method: "POST",
+  //       credentials: "include",
+  //       headers: { "Content-Type": "application/json" },
+  //       body: JSON.stringify({ costPerKwh: Number(stateForm.costPerKwh || 0) }),
+  //     });
+  //     const json = await res.json().catch(() => null);
+  //     if (!res.ok) {
+  //       alert("No se pudo guardar en perfil: " + (json?.message || res.status));
+  //       return;
+  //     }
+  //     alert("Cálculo guardado correctamente en tu perfil (mes actual).");
+  //   } catch (err) {
+  //     console.error("Error guardando cálculo:", err);
+  //     alert("Error guardando cálculo (ver consola).");
+  //   } finally {
+  //     setCalcLoading(false);
+  //   }
+  // };
+  // // --- FIN PARCHÉ ---
 
   // Función para volver al login o registro
   const handleBackToLogin = () => {
@@ -72,10 +194,7 @@ export default function Calculadora() {
             <h2 className="text-xl font-bold text-slate-950">Cálculo Manual</h2>
           </div>
 
-          <form
-            className="space-y-4"
-            onSubmit={(e) => (handleSubmit(e), getFetch(stateForm))}
-          >
+          <form className="space-y-4" onSubmit={handleSubmitAndFetch}>
             <section className="h-72 overflow-auto">
               <div>
                 <label className="block text-sm text-slate-950 mb-2">
@@ -100,7 +219,7 @@ export default function Calculadora() {
            [background:linear-gradient(white,white)_padding-box,linear-gradient(to_right,#1e3a8a,#b6ff3b)_border-box] 
            hover:[background:linear-gradient(white,white)_padding-box,linear-gradient(to_right,#b6ff3b,#162456)_border-box]"
                     aria-label="Unidad de potencia"
-                    defaultValue="W"
+                    value={stateForm.powerUnity}
                     name="powerUnity"
                     onChange={handleChange}
                   >
@@ -197,10 +316,7 @@ export default function Calculadora() {
             </h2>
           </div>
 
-          <form
-            className="space-y-4"
-            onSubmit={(e) => (handleSubmit(e), getFetch(stateForm))}
-          >
+          <form className="space-y-4" onSubmit={handleSubmitAndFetch}>
             <section className="h-72 overflow-auto">
               <div>
                 <label className="block text-sm text-slate-950 mb-2">
@@ -246,7 +362,7 @@ export default function Calculadora() {
                   Horas de uso por día
                 </label>
                 <input
-                  type="text"
+                  type="number"
                   placeholder="8"
                   className="w-full px-4 py-2 rounded-lg border-2 border-transparent bg-white 
            text-gray-900 focus:outline-none focus:ring-0 transition-all duration-300 
@@ -282,7 +398,7 @@ export default function Calculadora() {
                   Precio por kWh
                 </label>
                 <input
-                  type="text"
+                  type="number"
                   placeholder="0.15"
                   className="w-full px-4 py-2 rounded-lg border-2 border-transparent bg-white 
            text-gray-900 focus:outline-none focus:ring-0 transition-all duration-300 
@@ -299,7 +415,7 @@ export default function Calculadora() {
             <div className="pt-2">
               <button
                 className="w-full bg-gradient-to-r from-blue-950 to-lime-500  hover:from-lime-500 hover:to-blue-950 text-white font-semibold py-2 px-6 rounded-lg transition-colors duration-200"
-                type="button"
+                type="submit"
               >
                 Calcular Consumo
               </button>
@@ -307,6 +423,46 @@ export default function Calculadora() {
           </form>
         </div>
       </section>
+
+      {/* RESULTADO DEL CÁLCULO */}
+      {(calcLoading || calcError || calcResult) && (
+        <section className="w-full max-w-5xl mt-8">
+          <div className="bg-white rounded-2xl shadow-lg p-6 border border-lime-100 text-center">
+            {/* Loading */}
+            {calcLoading && (
+              <p className="text-blue-900 font-semibold animate-pulse">
+                Calculando...
+              </p>
+            )}
+
+            {/* Error */}
+            {calcError && (
+              <p className="text-red-600 font-semibold">{calcError}</p>
+            )}
+
+            {/* Resultado */}
+            {calcResult && !calcLoading && !calcError && (
+              <div>
+                <h3 className="text-xl font-bold text-blue-900 mb-4">
+                  Resultado del cálculo
+                </h3>
+
+                <p className="text-lg text-slate-900">
+                  <span className="font-semibold">
+                    Consumo total estimado:{" "}
+                  </span>
+                  {calcResult.summary.total_consumption.toFixed(2)} kWh
+                </p>
+
+                <p className="text-lg text-slate-900 mt-1">
+                  <span className="font-semibold">Costo: </span>$
+                  {calcResult.summary.cost.toFixed(2)}
+                </p>
+              </div>
+            )}
+          </div>
+        </section>
+      )}
 
       {/* Info Box */}
       <section className="w-full max-w-5xl mt-8 bg-white rounded-2xl shadow-lg p-6 md:p-8">

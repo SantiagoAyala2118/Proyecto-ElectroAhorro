@@ -3,6 +3,7 @@ import { CalculationModel } from "../models/calculator.model.js";
 import { UserModel } from "../models/user.model.js";
 import { ApplianceModel } from "../models/appliance.model.js";
 import { MonthlyConsumptionModel } from "../models/monthlyConsumption.model.js"; // Nuevo import
+import { sequelize } from "../config/database.js"; //Nuevo import
 
 export const createCalculation = async (req, res) => {
   const { costPerKwh, powerUnity } = req.body;
@@ -122,6 +123,15 @@ export const calculateEnergyConsumption = async (req, res) => {
     // Guardar o actualizar el gasto del mes actual
     const currentMonth = new Date().toISOString().slice(0, 7); // 'YYYY-MM'
     const userId = req.userLogged?.id || 1; // Asumir userLogged; ajusta si no hay auth
+    // justo después de calcular results and monthlyCost
+    console.log("--- DEBUG calculateEnergyConsumption ---");
+    console.log("userId:", userId);
+    console.log("results.totals:", JSON.stringify(results.totals, null, 2));
+    console.log(
+      "appliances used:",
+      JSON.stringify(results.appliances, null, 2)
+    );
+    console.log("raw monthlyCost (before rounding):", monthlyCost);
     await MonthlyConsumptionModel.upsert({
       user_id: userId,
       month: currentMonth,
@@ -141,29 +151,40 @@ export const calculateEnergyConsumption = async (req, res) => {
   }
 };
 
-// Nueva función para obtener datos mensuales
 export const getMonthlyConsumption = async (req, res) => {
   try {
-    const userId = req.userLogged?.id || 1; // Asumir userLogged
-    const data = await MonthlyConsumptionModel.findAll({
+    const userId = req.userLogged?.id || 1;
+
+    // Agrupar por mes (YYYY-MM) y sumar costos por mes
+    const rows = await MonthlyConsumptionModel.findAll({
+      attributes: [
+        // Si usás MySQL, DATE_FORMAT; si usás Postgres, usá to_char / substring.
+        [sequelize.literal("LEFT(`month`, 7)"), "month"], // toma 'YYYY-MM' o '2025-11'
+        [sequelize.fn("SUM", sequelize.col("cost")), "cost"],
+      ],
       where: { user_id: userId },
-      order: [['month', 'ASC']],
+      group: [sequelize.literal("LEFT(`month`, 7)")],
+      order: [[sequelize.literal("LEFT(`month`, 7)"), "ASC"]],
+      raw: true,
     });
 
-    const monthlyData = data.map(item => ({
-      month: item.month.split('-')[1], // Solo mes, e.g., '11' para noviembre
-      cost: item.cost,
+    // rows ejemplo: [{ month: '2025-01', cost: '123.45' }, ...]
+    const monthlyData = rows.map((r) => ({
+      month: r.month, // devolver YYYY-MM para que el frontend lo parsee mejor
+      cost: Number(r.cost) || 0,
     }));
 
-    // Si no hay datos, empezar desde el mes actual con 0
+    // Si no hay datos, devolvemos el mes actual con cost 0
     if (monthlyData.length === 0) {
-      const currentMonth = new Date().getMonth() + 1; // 1-12
-      monthlyData.push({ month: currentMonth.toString().padStart(2, '0'), cost: 0 });
+      const currentMonth = new Date().toISOString().slice(0, 7); // 'YYYY-MM'
+      monthlyData.push({ month: currentMonth, cost: 0 });
     }
 
     return res.status(200).json({ monthlyData });
   } catch (err) {
     console.error("Error obteniendo consumo mensual", err);
-    return res.status(500).json({ message: "Error al obtener datos mensuales" });
+    return res
+      .status(500)
+      .json({ message: "Error al obtener datos mensuales" });
   }
 };

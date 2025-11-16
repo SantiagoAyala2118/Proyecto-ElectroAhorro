@@ -14,7 +14,7 @@ import {
 } from "recharts";
 
 export const UserProfile = () => {
-  // const navigate = useNavigate();
+  const navigate = useNavigate();
   const [activeSection, setActiveSection] = useState("profile");
   const [userData, setUserData] = useState(null);
   const [appliancesList, setAppliancesList] = useState([]); // Cambiar a estado dinámico
@@ -25,15 +25,41 @@ export const UserProfile = () => {
 
   const fetchConsumptionData = async () => {
     try {
-      const res = await fetch("http://localhost:4000/api/monthly-consumption", {
-        credentials: "include",
-      });
-      if (res.ok) {
-        const data = await res.json();
-        setMonthlyData(data.monthlyData || []);
+      const res = await fetch(
+        "http://localhost:4000/api/monthly-consumption?ts=" + Date.now(),
+        {
+          credentials: "include",
+          cache: "no-store",
+        }
+      );
+
+      console.log("monthly-consumption status", res.status);
+
+      if (res.status === 401) {
+        // Sesión vencida: limpiamos el estado de login del cliente
+        console.warn("Sesión inválida o expirada: limpiando isLogged");
+        localStorage.removeItem("isLogged");
+        setMonthlyData([]);
+        // redirigir al login si querés:
+        // navigate('/login');
+        return;
       }
+
+      if (!res.ok) {
+        const text = await res.text().catch(() => null);
+        console.error("monthly-consumption error body:", text);
+        setMonthlyData([]);
+        return;
+      }
+
+      const payload = await res.json();
+      // Acepta varias formas de respuesta para robustez
+      const monthly = payload.monthlyData || payload.data || payload || [];
+      console.log("monthly-consumption payload resolved to:", monthly);
+      setMonthlyData(Array.isArray(monthly) ? monthly : []);
     } catch (err) {
       console.error("Error fetching monthly data:", err);
+      setMonthlyData([]);
     }
   };
 
@@ -74,39 +100,160 @@ export const UserProfile = () => {
       }
     };
 
+    // Ejecutar todas las cargas al montar
     fetchUserData();
     fetchUserAppliances();
+    fetchConsumptionData(); // <= Traer historial mensual desde el backend al montar
   }, []); // Remove dependency to avoid loop
 
   // Separate useEffect for consumption calculation (ahora solo para actualizar el mes actual)
   useEffect(() => {
-    if (appliancesList.length > 0) {
-      // Llamar al cálculo para actualizar el mes actual
-      fetch("http://localhost:4000/api/calculate", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
+    const runCalculation = async () => {
+      if (appliancesList.length === 0) return;
+      try {
+        const body = {
           appliances: appliancesList
             .map((appliance) => ({
               applianceId: appliance.Appliance?.id,
               hoursOfUse: 1,
             }))
             .filter((item) => item.applianceId),
-        }),
-        credentials: "include",
-      }).then(() => fetchConsumptionData()); // Recargar datos después de calcular
-    }
+        };
+
+        const res = await fetch("http://localhost:4000/api/calculate", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify(body),
+          credentials: "include",
+        });
+
+        if (!res.ok) {
+          console.error("Error en cálculo:", res.status);
+          return;
+        }
+        // recargar datos del historial
+        await fetchConsumptionData();
+      } catch (err) {
+        console.error("Error al ejecutar cálculo automático:", err);
+      }
+    };
+
+    runCalculation();
   }, [appliancesList]); // Only runs when appliancesList changes
 
-  //& Aqui iria la biblioteca de React de Graficos
-  // const monthlyData = [
-  //   { month: "Ene", consumption: 280 },
-  //   { month: "Feb", consumption: 245 },
-  //   { month: "Mar", consumption: 310 },
-  //   { month: "Abr", consumption: 195 },
-  //   { month: "May", consumption: 265 },
-  //   { month: "Jun", consumption: 340 },
-  // ];
+  // Transformación y simulación para el gráfico
+  const monthNames = [
+    "Ene",
+    "Feb",
+    "Mar",
+    "Abr",
+    "May",
+    "Jun",
+    "Jul",
+    "Ago",
+    "Sep",
+    "Oct",
+    "Nov",
+    "Dic",
+  ];
+
+  /**
+   * Convierte array de { month: 'YYYY-MM' | 'MM', cost } a:
+   * [{ month: 'Ene', cost: 12.34, date: Date }]
+   * Ordena cronológicamente por year-month.
+   */
+
+  const toNumberSafe = (v, fallback = 0) => {
+    const n = Number(v);
+    return Number.isFinite(n) ? n : fallback;
+  };
+
+  const transformMonthlyData = (raw) => {
+    if (!Array.isArray(raw)) return [];
+
+    const parsed = raw.map((m) => {
+      const original = String(m?.month ?? "");
+      let year = null;
+      let monthNum = null;
+
+      if (original.includes("-")) {
+        const parts = original.split("-");
+        year = toNumberSafe(parts[0], new Date().getFullYear());
+        monthNum = toNumberSafe(parts[1], new Date().getMonth() + 1);
+      } else {
+        monthNum = toNumberSafe(original, new Date().getMonth() + 1);
+        year = new Date().getFullYear();
+      }
+
+      if (monthNum < 1 || monthNum > 12) monthNum = new Date().getMonth() + 1;
+      const date = new Date(year, monthNum - 1, 1);
+      const cost = toNumberSafe(m?.cost, 0);
+
+      return {
+        date,
+        monthLabel: monthNames[date.getMonth()],
+        cost,
+      };
+    });
+
+    // Agrupar por year-month (sumar si hay duplicados)
+    const grouped = parsed.reduce((acc, cur) => {
+      const key = `${cur.date.getFullYear()}-${String(
+        cur.date.getMonth() + 1
+      ).padStart(2, "0")}`;
+      if (!acc[key])
+        acc[key] = { date: cur.date, monthLabel: cur.monthLabel, cost: 0 };
+      acc[key].cost += cur.cost;
+      return acc;
+    }, {});
+
+    const out = Object.keys(grouped)
+      .map((k) => ({
+        month: grouped[k].monthLabel,
+        cost: Number(grouped[k].cost.toFixed(2)),
+        date: grouped[k].date,
+      }))
+      .sort((a, b) => a.date - b.date);
+
+    return out;
+  };
+
+  const simulateHistory = (currentCost = 1000, months = 6) => {
+    // Aseguramos que currentCost sea número válido
+    const base = toNumberSafe(currentCost, 1000);
+    const out = [];
+    const today = new Date();
+    for (let i = months - 1; i >= 0; i--) {
+      const d = new Date(today.getFullYear(), today.getMonth() - i, 1);
+      const factor = 1 + (Math.random() - 0.5) * 0.2; // ±10%
+      const val = Number((base * factor).toFixed(2));
+      out.push({
+        month: monthNames[d.getMonth()],
+        cost: val,
+      });
+    }
+    return out;
+  };
+
+  // Antes de calcular dataToShow imprimimos para debug
+  console.log(
+    "DEBUG userData.estimatedCost raw ->",
+    userData?.estimatedCost,
+    "type:",
+    typeof userData?.estimatedCost
+  );
+
+  const transformedMonthly = transformMonthlyData(monthlyData);
+  console.log("DEBUG transformedMonthly ->", transformedMonthly);
+
+  const hasRealNonZero = transformedMonthly.some(
+    (d) => toNumberSafe(d.cost, 0) > 0
+  );
+  const dataToShow = hasRealNonZero
+    ? transformedMonthly
+    : simulateHistory(userData?.estimatedCost, 6);
+  // --- fin parche ---
+
   const handleGoToProducts = () => {
     navigate("/catalogo"); // Ajusta la ruta según tu configuración de rutas
   };
@@ -196,22 +343,43 @@ export const UserProfile = () => {
                 <h2 className="text-2xl font-bold text-[#2A3132] mb-6 border-b-2 border-[#763626] pb-3">
                   📈 Gasto Mensual
                 </h2>
-                {loading || monthlyData.length === 0 ? (
+                {loading ? (
                   <div className="h-64 flex items-center justify-center">
                     Cargando gráfico...
                   </div>
+                ) : !dataToShow || dataToShow.length === 0 ? (
+                  <div className="h-64 flex items-center justify-center">
+                    No hay datos para mostrar.
+                  </div>
                 ) : (
                   <ResponsiveContainer width="100%" height={256}>
-                    <LineChart data={monthlyData}>
+                    <LineChart data={dataToShow}>
+                      <defs>
+                        <linearGradient id="grad" x1="0" y1="0" x2="0" y2="1">
+                          <stop
+                            offset="0%"
+                            stopColor="#763626"
+                            stopOpacity={0.6}
+                          />
+                          <stop
+                            offset="100%"
+                            stopColor="#763626"
+                            stopOpacity={0}
+                          />
+                        </linearGradient>
+                      </defs>
                       <CartesianGrid strokeDasharray="3 3" />
                       <XAxis dataKey="month" />
-                      <YAxis />
-                      <Tooltip />
+                      <YAxis tickFormatter={(v) => `$${v}`} />
+                      <Tooltip formatter={(value) => [`$${value}`, "Costo"]} />
                       <Line
                         type="monotone"
                         dataKey="cost"
                         stroke="#763626"
                         strokeWidth={2}
+                        dot={{ r: 3 }}
+                        activeDot={{ r: 6 }}
+                        fill="url(#grad)"
                       />
                     </LineChart>
                   </ResponsiveContainer>
@@ -224,24 +392,27 @@ export const UserProfile = () => {
                   Mis Electrodomésticos
                 </h2>
                 <div className="space-y-4">
-                  {appliancesList.map((appliance, index) => (
-                    <div
-                      key={index}
-                      className="flex justify-between items-center p-4 bg-white/55 rounded-xl border border-white/30"
-                    >
-                      <div>
-                        <h3 className="font-semibold text-[#2A3132]">
-                          {appliance.Appliance?.nombre || "Sin nombre"}
-                        </h3>
-                        <p className="text-sm text-[#336B87]">
-                          {appliance.Appliance?.consumo_promedio || 0} kWh
-                        </p>
+                  {appliancesList.map((applianceObj) => {
+                    const ap = applianceObj.Appliance || applianceObj;
+                    return (
+                      <div
+                        key={ap?.id ?? Math.random()}
+                        className="flex justify-between items-center p-4 bg-white/55 rounded-xl border border-white/30"
+                      >
+                        <div>
+                          <h3 className="font-semibold text-[#2A3132]">
+                            {ap?.nombre || "Sin nombre"}
+                          </h3>
+                          <p className="text-sm text-[#336B87]">
+                            {ap?.consumo_promedio ?? 0} kWh
+                          </p>
+                        </div>
+                        <span className="px-3 py-1 rounded-full text-xs font-medium bg-green-100 text-green-800">
+                          Activo
+                        </span>
                       </div>
-                      <span className="px-3 py-1 rounded-full text-xs font-medium bg-green-100 text-green-800">
-                        Activo
-                      </span>
-                    </div>
-                  ))}
+                    );
+                  })}
                 </div>
                 <Link
                   to={"/appliance/catalog"}

@@ -57,27 +57,40 @@ export const Category = () => {
   const renderCards = categories.map((card) => {
     return (
       // no olvides colocar la key para que no se repitan
-      <div key={card.id} className="w-1/3 p-4">
-        <div className="bg-white border-lime-400 rounded-lg shadow-md p-4 flex flex-col items-center hover:scale-105 transition-all duration-300">
+      <div
+        key={card.id}
+        className="w-full sm:w-1/2 lg:w-1/3 p-4"
+      >
+        <div className="bg-white border border-gray-200 rounded-2xl shadow-lg hover:shadow-2xl p-6 flex flex-col items-center transition-all duration-300 hover:scale-[1.03]">
           <img
             src={card.image}
             alt={card.title}
-            className="w-full h-48 object-cover rounded-md"
+            className="w-full h-48 object-cover rounded-xl shadow-md"
           />
-          <h3 className="text-lg font-bold mt-4">{card.title}</h3>
-          <p className="text-gray-600 text-sm mt-2">{card.description}</p>
-          <Button className="mt-4 bg-lime-400">Ver más</Button>
+          <h3 className="text-2xl font-extrabold mt-4 text-blue-950 tracking-wide">
+            {card.title}
+          </h3>
+          <p className="text-gray-600 text-sm mt-2 text-center leading-relaxed">
+            {card.description}
+          </p>
+          <Button
+            className="mt-4 px-6 py-2 bg-gradient-to-br from-lime-400 to-blue-950 text-white font-semibold rounded-full shadow-md hover:from-lime-500 hover:to-blue-900 transition-all duration-300"
+          >
+            Ver más
+          </Button>
         </div>
       </div>
     );
   });
 
   return (
-    <section className="py-20 ">
+    <section className="py-20 bg-gray-100 text-slate-950">
       <Heading highlight="Categoría" heading="de Productos" />
 
       {/* Aca pones tus cards */}
-      <div className="flex flex-wrap justify-center">{renderCards}</div>
+      <div className="flex flex-wrap justify-center gap-y-6">
+        {renderCards}
+      </div>
     </section>
   );
 };

@@ -8,6 +8,7 @@ import { CatalogoElectrodomesticos } from "../pages/Catalogo.jsx";
 
 import { PrivateRoutes } from "./PrivateRoutes";
 import { PublicRoutes } from "./PublicRoutes.jsx";
+import { EnergyTips } from "../pages/EnergyTips.jsx";
 
 export const AppRouter = () => {
   return (
@@ -26,6 +27,7 @@ export const AppRouter = () => {
           path={"/appliance/catalog"}
           element={<CatalogoElectrodomesticos />}
         />
+        <Route path="/energytips" element={<EnergyTips />}/>
       </Route>
     </Routes>
   );

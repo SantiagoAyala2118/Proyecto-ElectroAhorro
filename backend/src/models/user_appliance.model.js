@@ -13,9 +13,9 @@ export const UserApplianceModel = sequelize.define(
       allowNull: false,
       unique: true,
     },
-    horas_of_use: {
-      type: DataTypes.FLOAT,
-      defaultValue: 1,
+    hours_of_use: {
+      type: DataTypes.DECIMAL(4, 2),
+      defaultValue: 1.0,
       allowNull: false,
     },
   },

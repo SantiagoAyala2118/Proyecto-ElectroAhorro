@@ -3,54 +3,78 @@ import { CalculationModel } from "../models/calculator.model.js";
 import { UserModel } from "../models/user.model.js";
 import { ApplianceModel } from "../models/appliance.model.js";
 import { MonthlyConsumptionModel } from "../models/monthlyConsumption.model.js"; // Nuevo import
+import { sequelize } from "../config/database.js"; //Nuevo import
 
 export const createCalculation = async (req, res) => {
-  const { costPerKwh, powerUnity } = req.body;
-
-  const userLogged = req.userLogged;
-  const validatedData = matchedData(req);
   try {
-    // TODO: Esto calcula el total del consumo de la persona
-    let total_consumption;
-    if (powerUnity === "W") {
-      total_consumption =
-        (validatedData.power *
-          validatedData.hours_per_day *
-          validatedData.days) /
-        1000; //TODO: Al dividir por 1000 sacamos los Kwh
-    } else {
-      total_consumption =
-        validatedData.power * validatedData.hours_per_day * validatedData.days;
-    }
-    //TODO: Esto es lo que la persona dice que cuesta un Kwh
-    const tariff = costPerKwh;
-    //TODO: esto ya es el costo final
-    const cost = total_consumption * tariff;
+    const userLogged = req.userLogged;
+    if (!userLogged)
+      return res
+        .status(401)
+        .json({ ok: false, message: "User not authenticated" });
 
-    // ** Creamos el registro del calculo asociado al usuario
+    const validatedData = matchedData(req);
+    const raw = req.body || {};
+
+    const powerRaw = validatedData.power ?? raw.power;
+    const hoursRaw = validatedData.hours_per_day ?? raw.hours_per_day;
+    const daysRaw = validatedData.days ?? raw.days;
+    const costRaw = raw.costPerKwh ?? req.body.costPerKwh ?? 0;
+    const unitRaw = raw.powerUnity ?? req.body.powerUnity ?? "W";
+
+    const power = Number(powerRaw);
+    const hours_per_day = Number(hoursRaw);
+    const days = Number(daysRaw);
+    const tariff = Number(costRaw);
+    const unit = String(unitRaw).toUpperCase() || "W";
+
+    if (!Number.isFinite(power) || power <= 0) {
+      return res.status(400).json({ ok: false, message: "Potencia inválida" });
+    }
+    if (!Number.isFinite(hours_per_day) || hours_per_day <= 0) {
+      return res
+        .status(400)
+        .json({ ok: false, message: "Horas por día inválidas" });
+    }
+    if (!Number.isFinite(days) || days <= 0) {
+      return res.status(400).json({ ok: false, message: "Días inválidos" });
+    }
+    if (!Number.isFinite(tariff) || tariff < 0) {
+      return res.status(400).json({ ok: false, message: "Tarifa inválida" });
+    }
+
+    let total_consumption;
+    if (unit === "W") {
+      total_consumption = (power * hours_per_day * days) / 1000;
+    } else {
+      total_consumption = power * hours_per_day * days;
+    }
+
+    const cost = Number((total_consumption * tariff).toFixed(2));
+
     const newCalculation = await CalculationModel.create({
-      power: validatedData.power,
-      hours_per_day: validatedData.hours_per_day,
-      days: validatedData.days,
-      total_consumption: total_consumption,
-      cost: cost,
+      power,
+      hours_per_day,
+      days,
+      total_consumption,
+      cost,
       user_id: userLogged.id,
     });
 
-    // ! ESTO ES PARA QUE EL FRONT LEA LA DATA Y GENERE LOS GRÁFICOS
-    const perDayKwh =
-      (validatedData.power * validatedData.hours_per_day) / 1000;
+    let perDayKwh;
+    if (unit === "W") {
+      perDayKwh = (power * hours_per_day) / 1000;
+    } else {
+      perDayKwh = power * hours_per_day;
+    }
 
     const dailyData = [];
-
     const today = new Date();
-
-    for (let i = 0; i < validatedData.days; i++) {
+    for (let i = 0; i < days; i++) {
       const d = new Date(today);
       d.setDate(today.getDate() + i);
-
       dailyData.push({
-        date: d.toISOString().slice(0, 10), // "YYYY-MM-DD"
+        date: d.toISOString().slice(0, 10),
         kwh: Number(perDayKwh.toFixed(4)),
       });
     }
@@ -59,20 +83,25 @@ export const createCalculation = async (req, res) => {
       ok: true,
       message: "Cálculo creado",
       data: newCalculation,
-      dailyData, //! Acá está lo de arriba
+      dailyData,
       summary: { total_consumption, cost },
     });
   } catch (err) {
     console.error("Error creating a calculation", err);
-    return res.status(500).json({
-      ok: false,
-      message: "Error creating a calculation",
-    });
+    return res
+      .status(500)
+      .json({ ok: false, message: "Error creating a calculation" });
   }
 };
 
 export const calculateEnergyConsumption = async (req, res) => {
   try {
+    // Aseguramos usuario (esta ruta ahora debería estar protegida por authMiddleware)
+    const userId = req.userLogged?.id;
+    if (!userId) {
+      return res.status(401).json({ message: "Usuario no autenticado" });
+    }
+
     const { appliances } = req.body; // Array de {applianceId, hoursOfUse}
 
     if (!appliances || !Array.isArray(appliances)) {
@@ -105,9 +134,9 @@ export const calculateEnergyConsumption = async (req, res) => {
           nombre: appliance.nombre,
           potencia: appliance.potencia,
           hoursUsed: hours,
-          dailyKwh,
-          monthlyKwh,
-          yearlyKwh,
+          dailyKwh: Number(dailyKwh.toFixed(4)),
+          monthlyKwh: Number(monthlyKwh.toFixed(4)),
+          yearlyKwh: Number(yearlyKwh.toFixed(4)),
         });
 
         results.totals.daily += dailyKwh;
@@ -116,22 +145,23 @@ export const calculateEnergyConsumption = async (req, res) => {
       }
     }
 
-    const tariff = 0.5; // Asumir tarifa fija; ajusta si es dinámica
-    const monthlyCost = results.totals.monthly * tariff;
+    const tariff = Number(req.body.costPerKwh ?? 0.5); // si el front manda tarifa la usamos
+    const monthlyCostRaw = results.totals.monthly * tariff;
+    const monthlyCost = Number(monthlyCostRaw.toFixed(2)); // **guardar con 2 decimales**
 
     // Guardar o actualizar el gasto del mes actual
     const currentMonth = new Date().toISOString().slice(0, 7); // 'YYYY-MM'
-    const userId = req.userLogged?.id || 1; // Asumir userLogged; ajusta si no hay auth
+
     await MonthlyConsumptionModel.upsert({
       user_id: userId,
       month: currentMonth,
-      cost: Math.round(monthlyCost),
+      cost: monthlyCost,
     });
 
     return res.status(200).json({
       message: "Cálculo realizado exitosamente",
       results,
-      monthlyCost: Math.round(monthlyCost),
+      monthlyCost,
     });
   } catch (err) {
     console.error("Error en cálculo de consumo", err);
@@ -141,29 +171,42 @@ export const calculateEnergyConsumption = async (req, res) => {
   }
 };
 
-// Nueva función para obtener datos mensuales
 export const getMonthlyConsumption = async (req, res) => {
   try {
-    const userId = req.userLogged?.id || 1; // Asumir userLogged
-    const data = await MonthlyConsumptionModel.findAll({
+    const userId = req.userLogged?.id;
+    if (!userId)
+      return res.status(401).json({ message: "Usuario no autenticado" });
+
+    // Agrupar por mes (YYYY-MM) y sumar costos por mes
+    const rows = await MonthlyConsumptionModel.findAll({
+      attributes: [
+        // Si usás MySQL, DATE_FORMAT; si usás Postgres, usá to_char / substring.
+        [sequelize.literal("LEFT(`month`, 7)"), "month"], // toma 'YYYY-MM' o '2025-11'
+        [sequelize.fn("SUM", sequelize.col("cost")), "cost"],
+      ],
       where: { user_id: userId },
-      order: [['month', 'ASC']],
+      group: [sequelize.literal("LEFT(`month`, 7)")],
+      order: [[sequelize.literal("LEFT(`month`, 7)"), "ASC"]],
+      raw: true,
     });
 
-    const monthlyData = data.map(item => ({
-      month: item.month.split('-')[1], // Solo mes, e.g., '11' para noviembre
-      cost: item.cost,
+    // rows ejemplo: [{ month: '2025-01', cost: '123.45' }, ...]
+    const monthlyData = rows.map((r) => ({
+      month: r.month, // devolver YYYY-MM para que el frontend lo parsee mejor
+      cost: Number(r.cost) || 0,
     }));
 
-    // Si no hay datos, empezar desde el mes actual con 0
+    // Si no hay datos, devolvemos el mes actual con cost 0
     if (monthlyData.length === 0) {
-      const currentMonth = new Date().getMonth() + 1; // 1-12
-      monthlyData.push({ month: currentMonth.toString().padStart(2, '0'), cost: 0 });
+      const currentMonth = new Date().toISOString().slice(0, 7); // 'YYYY-MM'
+      monthlyData.push({ month: currentMonth, cost: 0 });
     }
 
     return res.status(200).json({ monthlyData });
   } catch (err) {
     console.error("Error obteniendo consumo mensual", err);
-    return res.status(500).json({ message: "Error al obtener datos mensuales" });
+    return res
+      .status(500)
+      .json({ message: "Error al obtener datos mensuales" });
   }
 };

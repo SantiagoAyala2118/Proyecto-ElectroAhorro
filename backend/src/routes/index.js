@@ -7,6 +7,7 @@ import applianceRouter from "./appliance.routes.js";
 import authRouter from "./auth.routes.js";
 import calcRouter from "./calculator.routes.js";
 import userApplianceRouter from "./user_appliance.routes.js"; // Nueva importación
+import consumptionRouter from "./consumption.routes.js";
 
 const routes = Router();
 
@@ -27,5 +28,8 @@ routes.use(userApplianceRouter); // Nueva ruta
 
 //TODO CALCULATOR
 routes.use(calcRouter);
+
+//TODO CONSUMPTION
+routes.use(consumptionRouter);
 
 export default routes;

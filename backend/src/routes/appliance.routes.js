@@ -8,8 +8,7 @@ import {
   getAppliance,
   updateAppliance,
   getAllPublicAppliances, // Nueva importación
-  seedAppliances // Nueva importación
-
+  // seedAppliances // Nueva importación
 } from "../controllers/appliance.controller.js";
 
 //* --------------------------MIDDLEWARES
@@ -21,7 +20,7 @@ const applianceRouter = Router();
 
 //TODO RUTAS PÚBLICAS (sin autenticación)
 applianceRouter.get("/public/appliances", getAllPublicAppliances); // Para la calculadora pública
-applianceRouter.post("/seed-appliances", seedAppliances); // Para poblar la BD (puedes proteger esta ruta si quieres)
+// applianceRouter.post("/seed-appliances", seedAppliances); // Para poblar la BD (puedes proteger esta ruta si quieres)
 
 //TODO CREAR ELECTRODOMÉSTICO
 applianceRouter.post(

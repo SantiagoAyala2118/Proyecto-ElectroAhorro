@@ -12,11 +12,31 @@ export const Sidebar = ({ activeSection, setActiveSection }) => {
   const navigate = useNavigate();
 
   const menuItems = [
-    { id: "profile", label: "Mi Perfil", icon: <UserRound size={20} />, path: "/user/profile" },
+    {
+      id: "profile",
+      label: "Mi Perfil",
+      icon: <UserRound size={20} />,
+      path: "/user/profile",
+    },
     { id: "inicio", label: "Home", icon: <Home size={20} />, path: "/app" },
-    { id: "Catalogo", label: "Catálogo", icon: <Plug size={20} />, path: "/catalogo" },
-    { id: "calculadora", label: "Calculadora", icon: <Calculator size={20} />, path: "/calculator" },
-    { id: "settings", label: "Configuración", icon: <Settings size={20} />, path: "/settings" },
+    {
+      id: "Catalogo",
+      label: "Catálogo",
+      icon: <Plug size={20} />,
+      path: "/catalogo",
+    },
+    {
+      id: "calculadora",
+      label: "Calculadora",
+      icon: <Calculator size={20} />,
+      path: "/calculator",
+    },
+    {
+      id: "settings",
+      label: "Configuración",
+      icon: <Settings size={20} />,
+      path: "/settings",
+    },
   ];
 
   const handleNavigation = (item) => {
@@ -25,7 +45,8 @@ export const Sidebar = ({ activeSection, setActiveSection }) => {
   };
 
   const handleLogout = () => {
-    console.log("Cerrando sesión...");
+    alert("Cerrando sesión... Nos vemos pronto");
+    localStorage.removeItem("isLogged");
     navigate("/login");
   };
 

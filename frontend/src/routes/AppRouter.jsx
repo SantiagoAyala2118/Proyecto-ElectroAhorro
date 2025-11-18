@@ -9,7 +9,6 @@ import { CatalogoElectrodomesticos } from "../pages/Catalogo.jsx";
 import { PrivateRoutes } from "./PrivateRoutes";
 import { PublicRoutes } from "./PublicRoutes.jsx";
 import { EnergyTips } from "../pages/EnergyTips.jsx";
-import { EnergyTips } from "../pages/EnergyTips.jsx";
 
 export const AppRouter = () => {
   return (

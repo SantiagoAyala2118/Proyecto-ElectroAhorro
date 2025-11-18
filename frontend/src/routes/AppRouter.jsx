@@ -9,14 +9,16 @@ import { CatalogoElectrodomesticos } from "../pages/Catalogo.jsx";
 import { PrivateRoutes } from "./PrivateRoutes";
 import { PublicRoutes } from "./PublicRoutes.jsx";
 import { EnergyTips } from "../pages/EnergyTips.jsx";
+import LandingPage from "../pages/LandingPage.jsx";
 
 export const AppRouter = () => {
   return (
     <Routes>
       <Route element={<PublicRoutes />}>
-        <Route path={"*"} element={<Registro />} />
-        <Route path={"/"} element={<Registro />} />
+        <Route path={"/register"} element={<Registro />} />
         <Route path={"/login"} element={<Login />} />
+        <Route path="/landing-page" element={<LandingPage />} />
+        <Route path="*" element={<LandingPage />} />
       </Route>
 
       <Route element={<PrivateRoutes />}>

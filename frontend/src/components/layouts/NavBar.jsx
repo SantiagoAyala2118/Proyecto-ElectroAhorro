@@ -75,43 +75,6 @@ export const Navbar = () => {
         {/* ACTIONS */}
         <div className="flex items-center gap-x-6">
 
-          {/* INPUT MODERNO (más compacto) */}
-          <div className="
-            hidden md:flex items-center 
-            bg-white/10 backdrop-blur-xl 
-            border border-lime-400/40 
-            rounded-full px-4 py-1.5 
-            shadow-inner hover:border-lime-300 
-            transition
-          ">
-            <input
-              type="text"
-              placeholder="Buscar..."
-              className="
-                bg-transparent 
-                text-white 
-                placeholder-white/70 
-                focus:outline-none 
-                px-2 h-[5.5vh] 
-                w-40 
-                text-base
-              "
-            />
-            <button className="
-              bg-gradient-to-br from-lime-400 to-blue-900 
-              text-white 
-              w-11 h-11 
-              flex justify-center items-center 
-              rounded-full text-lg 
-              shadow-md 
-              hover:scale-110 
-              hover:from-lime-500 hover:to-blue-950 
-              transition-all duration-300
-            ">
-              <FaMagnifyingGlass />
-            </button>
-          </div>
-
           {/* ICONO LUZ */}
           <button className="
             text-white text-2xl 

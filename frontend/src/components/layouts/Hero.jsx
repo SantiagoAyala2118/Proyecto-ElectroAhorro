@@ -78,12 +78,6 @@ export const Hero = () => {
               <p className="text-lg md:text-xl text-gray-200 mt-2 max-w-2xl">
                 {slide.description}
               </p>
-              <a
-                href="/ahorros"
-                className="mt-6 px-6 py-2 bg-blue-950 hover:bg-blue-400 text-white rounded-lg shadow-lg transition"
-              >
-                Ver
-              </a>
             </div>
           </div>
         ))}

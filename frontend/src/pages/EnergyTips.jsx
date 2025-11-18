@@ -98,12 +98,12 @@ export const EnergyTips = () => {
   return (
     <>
       {/* Navbar fijo */}
-      <div className="fixed top-0 left-0 w-full bg-white shadow-md z-50">
+      <div className="fixed top-0 left-0 w-full bg-white shadow-md z-50 ">
         <Navbar />
       </div>
 
       {/* Fondo general */}
-      <div className="min-h-screen bg-gradient-to-b from-lime-50 via-blue-50 to-blue-100 pt-24 pb-16">
+      <div className="min-h-screen bg-gradient-to-b from-lime-50 via-blue-50 to-blue-100 pt-32 pb-16">
 
         {/* Encabezado */}
         <div className="text-center mb-16 px-4">

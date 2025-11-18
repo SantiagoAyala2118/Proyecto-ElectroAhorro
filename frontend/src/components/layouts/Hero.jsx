@@ -56,7 +56,7 @@ export const Hero = () => {
     );
 
   return (
-    <section className="relative w-full h-[500px] overflow-hidden mt-20 min-w-full">
+    <section className="relative w-full h-[500px] overflow-hidden mt-[16vh] min-w-full">
       {/* Slides */}
       <div className="w-full h-full relative">
         {slides.map((slide, index) => (

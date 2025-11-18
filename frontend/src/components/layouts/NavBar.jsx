@@ -1,12 +1,13 @@
+import { useState } from "react";
 import logo from "../../assets/images/elecctroAHORRO.png";
-import { FaMagnifyingGlass } from "react-icons/fa6";
-import { MdOutlineLightMode } from "react-icons/md";
-import { TbMenu2 } from "react-icons/tb";
+import { FaBolt } from "react-icons/fa";   
+import { TbMenu2, TbX } from "react-icons/tb";
 import { useNavigate } from "react-router-dom";
 import { LinkButton } from "../common/LinkButton";
 
 export const Navbar = () => {
   const navigate = useNavigate();
+  const [menuOpen, setMenuOpen] = useState(false);
 
   const handleGoToCalculator = () => navigate("/calculator");
   const handleGoToHome = () => navigate("/home");
@@ -15,90 +16,103 @@ export const Navbar = () => {
   const handleGoToSave = () => navigate("/energytips");
 
   return (
-    <header className="
-      fixed top-0 left-0 right-0 z-50 
-      bg-blue-950/90 backdrop-blur-md 
-      border-b border-lime-400/40 
-      shadow-lg
-    ">
-      <nav className="
-        max-w-[1400px] mx-auto px-10 
-        h-[16vh] 
-        flex justify-between items-center
-      ">
-
-        {/* LOGO */}
-        <img
-          src={logo}
-          alt="logo"
+    <>
+      {/* NAVBAR */}
+      <header
+        className="
+        fixed top-0 left-0 right-0 z-50 
+        bg-gradient-to-r from-slate-950 via-blue-950 to-slate-950
+        backdrop-blur-xl
+        border-b border-lime-400/30
+        shadow-[0_0_18px_rgba(0,255,150,0.08)]
+      "
+      >
+        <nav
           className="
-            w-40 
-            cursor-pointer 
-            drop-shadow-[0_0_10px_rgba(0,0,0,0.5)]
-            hover:scale-105 
-            transition-transform duration-300
+          max-w-[1500px] mx-auto px-10 
+          h-[16vh]
+          flex justify-between items-center
+        "
+        >
+          {/* LOGO */}
+          <img
+            src={logo}
+            alt="logo"
+            className="
+              w-44 cursor-pointer 
+              drop-shadow-[0_0_10px_rgba(0,255,100,0.15)]
+              hover:scale-110
+              hover:drop-shadow-[0_0_15px_rgba(0,255,120,0.3)]
+              transition-all duration-300
+            "
+          />
+
+          {/* MENU DESKTOP */}
+          <ul
+            className="
+            hidden md:flex items-center gap-x-14
+            text-[21px] font-bold tracking-wide
           "
-        />
+          >
+            <LinkButton 
+              onNavigate={handleGoToHome} 
+              location={"Inicio"} 
+              className="text-white hover:text-lime-300 transition-all hover:drop-shadow-[0_0_6px_lime]" 
+            />
+            <LinkButton 
+              onNavigate={handleGoToProducts} 
+              location={"Productos"} 
+              className="text-white hover:text-lime-300 transition-all hover:drop-shadow-[0_0_6px_lime]" 
+            />
+            <LinkButton 
+              onNavigate={handleGoToSave} 
+              location={"Ahorro"} 
+              className="text-white hover:text-lime-300 transition-all hover:drop-shadow-[0_0_6px_lime]" 
+            />
+            <LinkButton 
+              onNavigate={handleGoToCalculator} 
+              location={"Calculadora"} 
+              className="text-white hover:text-lime-300 transition-all hover:drop-shadow-[0_0_6px_lime]" 
+            />
+            <LinkButton 
+              onNavigate={handleGoToProfile} 
+              location={"Perfil"} 
+              className="text-white hover:text-lime-300 transition-all hover:drop-shadow-[0_0_6px_lime]" 
+            />
+          </ul>
 
-        {/* MENÚ DESKTOP */}
-        <ul className="
-          hidden md:flex items-center gap-x-10
-          text-[17px] font-semibold tracking-wide
-        ">
-          <LinkButton
-            onNavigate={handleGoToHome}
-            location={"Inicio"}
-            className="text-white hover:text-lime-400 transition"
-          />
-          <LinkButton
-            onNavigate={handleGoToProducts}
-            location={"Productos"}
-            className="text-white hover:text-lime-400 transition"
-          />
-          <LinkButton
-            onNavigate={handleGoToSave}
-            location={"Ahorro"}
-            className="text-white hover:text-lime-400 transition"
-          />
-          <LinkButton
-            onNavigate={handleGoToCalculator}
-            location={"Calculadora"}
-            className="text-white hover:text-lime-400 transition"
-          />
-          <LinkButton
-            onNavigate={handleGoToProfile}
-            location={"Perfil"}
-            className="text-white hover:text-lime-400 transition"
-          />
-        </ul>
+          {/* ACTIONS */}
+          <div className="flex items-center gap-x-6">
 
-        {/* ACTIONS */}
-        <div className="flex items-center gap-x-6">
+            {/* ICONO FaBolt – NEÓN SUAVE */}
+            <button
+              className="
+              text-white text-4xl 
+              hover:text-lime-300 
+              transition-all 
+              hover:scale-115
+              hover:drop-shadow-[0_0_6px_lime]
+            "
+            >
+              <FaBolt />
+            </button>
 
-          {/* ICONO LUZ */}
-          <button className="
-            text-white text-2xl 
-            hover:text-lime-400 
-            transition 
-            drop-shadow 
-            hover:scale-110
-          ">
-            <MdOutlineLightMode />
-          </button>
-
-          {/* MENÚ MOBILE */}
-          <button className="
-            text-white text-3xl md:hidden 
-            hover:text-lime-400 
-            transition 
-            drop-shadow 
-            hover:scale-110
-          ">
-            <TbMenu2 />
-          </button>
-        </div>
-
-      </nav>
-    </header>
+            {/* MENÚ MOBILE */}
+            <button
+              className="
+              text-white text-5xl md:hidden 
+              hover:text-lime-300 
+              transition-all
+              hover:scale-115
+              hover:drop-shadow-[0_0_6px_lime]
+            "
+              onClick={() => setMenuOpen(true)}
+            >
+              <TbMenu2 />
+            </button>
+          </div>
+        </nav>
+      </header>
+    </>
   );
 };

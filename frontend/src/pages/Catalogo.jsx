@@ -152,7 +152,7 @@ export const CatalogoElectrodomesticos = () => {
         <div className="min-h-screen bg-gray-100 text-slate-950">
             <Navbar />
 
-            <div className="pt-[14vh] max-w-7xl mx-auto p-6">
+            <div className="pt-[20vh] max-w-7xl mx-auto p-6">
 
                 {/* Filtros */}
                 <div className="bg-white border border-gray-200 rounded-2xl shadow-lg p-6 mb-10 hover:shadow-xl transition-all duration-300">

@@ -1,11 +1,20 @@
 import { useNavigate } from 'react-router-dom';
 import { Navbar } from '../components/layouts/NavBar';
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
+import axios from 'axios';
+import InfiniteScroll from 'react-infinite-scroll-component';
 
 export const EnergyTips = () => {
   const navigate = useNavigate();
   // Estado para manejar qué elementos están expandidos
   const [expandedItems, setExpandedItems] = useState([]);
+  // Estado para noticias dinámicas
+  const [newsItems, setNewsItems] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
+  // Estado para scroll infinito
+  const [page, setPage] = useState(1);
+  const [hasMore, setHasMore] = useState(true);
 
   // Función para alternar la expansión de elementos
   const toggleExpand = (id) => {
@@ -16,18 +25,59 @@ export const EnergyTips = () => {
     }
   };
 
-  // Datos de ejemplo para noticias y consejos
-  const contentItems = [
+  // Función para obtener noticias de NewsAPI
+  const fetchNews = async (currentPage = 1, append = false) => {
+    if (append) setLoading(false); // No mostrar loading para cargas adicionales
+    else setLoading(true);
+    setError(null);
+    try {
+      const apiKey = import.meta.env.VITE_NEWS_API_KEY;
+      if (!apiKey) {
+        throw new Error('Clave de API no configurada. Verifica tu archivo .env.');
+      }
+      const response = await axios.get(`https://newsapi.org/v2/everything?q=renewable+energy&language=en&sortBy=publishedAt&page=${currentPage}&pageSize=6&apiKey=${apiKey}`);
+      const articles = response.data.articles;
+      const formattedNews = articles.map((article, index) => ({
+        id: (currentPage - 1) * 6 + index + 1, // IDs únicos
+        type: 'noticia',
+        title: article.title,
+        description: article.description || 'Sin descripción disponible.',
+        image: article.urlToImage || 'https://via.placeholder.com/800x400?text=Imagen+no+disponible',
+        fullContent: article.content || article.description || 'Contenido completo no disponible.'
+      }));
+      if (append) {
+        setNewsItems(prev => [...prev, ...formattedNews]);
+      } else {
+        setNewsItems(formattedNews);
+      }
+      if (articles.length < 6) {
+        setHasMore(false); // No hay más artículos
+      }
+    } catch (err) {
+      console.error('Error al cargar noticias:', err);
+      setError(`Error al cargar las noticias: ${err.message || 'Inténtalo de nuevo más tarde.'}`);
+      setHasMore(false);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  useEffect(() => {
+    fetchNews();
+  }, []);
+
+  // Función para cargar más
+  const loadMore = () => {
+    if (hasMore) {
+      setPage(prev => prev + 1);
+      fetchNews(page + 1, true);
+    }
+  };
+
+  // Consejos estáticos (siempre al inicio)
+  const staticTips = [
     {
       id: 1,
-      type: 'noticia',
-      title: 'Nuevos avances en energía solar fotovoltaica',
-      description: 'Investigadores desarrollan paneles solares con un 40% más de eficiencia gracias a nuevos materiales.',
-      image: 'https://images.unsplash.com/photo-1509391366360-2e959784a276?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=800&q=80',
-      fullContent: 'Un equipo de científicos ha logrado un avance significativo en la eficiencia de los paneles solares mediante la incorporación de materiales perovskitas. Esta tecnología podría reducir significativamente los costos de la energía solar y acelerar la transición hacia fuentes renovables.'
-    },
-    {
-      id: 2,
       type: 'consejo',
       title: 'Optimiza el uso de tu calefacción',
       description: 'Ajusta tu termostato para ahorrar hasta un 10% en tu factura energética.',
@@ -35,15 +85,7 @@ export const EnergyTips = () => {
       fullContent: 'Reducir la temperatura de tu calefacción en solo 1°C puede representar un ahorro significativo. Programa tu termostato para bajar la temperatura cuando no estés en casa o durante la noche. Además, asegúrate de que tus radiadores estén libres de obstrucciones para una mejor circulación del calor.'
     },
     {
-      id: 3,
-      type: 'noticia',
-      title: 'Inversión récord en energía eólica marina',
-      description: 'El gobierno anuncia una inversión de 5.000 millones para parques eólicos en la costa.',
-      image: 'https://images.unsplash.com/photo-1505740420928-5e560c06d30e?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=800&q=80',
-      fullContent: 'Esta inversión histórica permitirá la instalación de más de 200 turbinas eólicas que generarán energía suficiente para abastecer a 3 millones de hogares. Se espera que el proyecto cree más de 10,000 empleos directos e indirectos en las regiones costeras.'
-    },
-    {
-      id: 4,
+      id: 2,
       type: 'consejo',
       title: 'Aprovecha la luz natural',
       description: 'Reorganiza tus espacios para maximizar el uso de luz solar durante el día.',
@@ -51,15 +93,7 @@ export const EnergyTips = () => {
       fullContent: 'La luz natural no solo es gratuita, sino que también tiene beneficios para la salud. Mantén las cortinas abiertas durante el día y considera el uso de colores claros en paredes y techos para reflejar mejor la luz. Además, realiza actividades que requieran buena iluminación cerca de ventanas durante las horas de luz.'
     },
     {
-      id: 5,
-      type: 'noticia',
-      title: 'Nuevo sistema de almacenamiento energético',
-      description: 'Empresa tecnológica presenta baterías de larga duración para energías renovables.',
-      image: 'https://images.unsplash.com/photo-1581094794329-c8112a89af12?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=800&q=80',
-      fullContent: 'El nuevo sistema de almacenamiento utiliza tecnología de flujo que permite almacenar energía durante períodos más largos con menos degradación. Esto soluciona uno de los principales desafíos de las energías renovables: la intermitencia. Las primeras instalaciones piloto mostrarán resultados en los próximos 6 meses.'
-    },
-    {
-      id: 6,
+      id: 3,
       type: 'consejo',
       title: 'Mantenimiento de electrodomésticos',
       description: 'El cuidado regular de tus electrodomésticos puede reducir su consumo hasta un 15%.',
@@ -67,6 +101,9 @@ export const EnergyTips = () => {
       fullContent: 'Limpia regularmente los filtros de tu aire acondicionado y nevera para mantener su eficiencia. Descongela el congelador antes de que la capa de hielo supere los 3mm. Revisa los burletes de puertas de nevera y horno para asegurar un cierre hermético. Estos pequeños mantenimientos pueden prolongar la vida útil de tus electrodomésticos y reducir significativamente su consumo energético.'
     }
   ];
+
+  // Combinar consejos con noticias
+  const contentItems = [...staticTips, ...newsItems];
 
   return (
     <>
@@ -88,86 +125,110 @@ export const EnergyTips = () => {
             </p>
           </div>
 
-          {/* Contenido principal - Noticias y consejos alternados */}
-          <div className="max-w-6xl mx-auto">
-            {contentItems.map((item, index) => {
-              const isEven = index % 2 === 0;
-              const isExpanded = expandedItems.includes(item.id);
+          {/* Indicador de carga o error */}
+          {loading && <p className="text-center text-gray-600">Cargando noticias...</p>}
+          {error && (
+            <div className="text-center">
+              <p className="text-red-600 mb-4">{error}</p>
+              <button
+                onClick={() => fetchNews()}
+                className="bg-green-600 text-white px-4 py-2 rounded hover:bg-green-700"
+              >
+                Reintentar
+              </button>
+            </div>
+          )}
 
-              return (
-                <div
-                  key={item.id}
-                  className={`mb-16 flex flex-col ${isEven ? 'lg:flex-row' : 'lg:flex-row-reverse'} items-center gap-8 transition-all duration-500 ${isExpanded ? 'bg-white rounded-2xl p-6 shadow-lg' : ''}`}
-                >
-                  {/* Imagen */}
-                  <div className={`w-full lg:w-1/2 ${isExpanded ? 'lg:w-2/5' : ''} transition-all duration-500 relative`}>
+          {/* Contenido principal con scroll infinito */}
+          {!loading && !error && (
+            <InfiniteScroll
+              dataLength={contentItems.length}
+              next={loadMore}
+              hasMore={hasMore}
+              loader={<p className="text-center text-gray-600">Cargando más noticias...</p>}
+              endMessage={<p className="text-center text-gray-600">No hay más noticias.</p>}
+            >
+              <div className="max-w-6xl mx-auto">
+                {contentItems.map((item, index) => {
+                  const isEven = index % 2 === 0;
+                  const isExpanded = expandedItems.includes(item.id);
+
+                  return (
                     <div
-                      className="rounded-xl overflow-hidden shadow-md cursor-pointer transform hover:scale-105 transition-transform duration-300"
-                      onClick={() => toggleExpand(item.id)}
+                      key={item.id}
+                      className={`mb-16 flex flex-col ${isEven ? 'lg:flex-row' : 'lg:flex-row-reverse'} items-center gap-8 transition-all duration-500 ${isExpanded ? 'bg-white rounded-2xl p-6 shadow-lg' : ''}`}
                     >
-                      <img
-                        src={item.image}
-                        alt={item.title}
-                        className="w-full h-64 object-cover"
-                      />
-                    </div>
-                    {/* Etiqueta de tipo (Noticia/Consejo) */}
-                    <div className="absolute top-4 left-4">
-                      <span className={`px-3 py-1 rounded-full text-sm font-medium ${item.type === 'noticia' ? 'bg-blue-100 text-blue-800' : 'bg-green-100 text-green-800'}`}>
-                        {item.type === 'noticia' ? 'Noticia' : 'Consejo'}
-                      </span>
-                    </div>
-                  </div>
-
-                  {/* Texto */}
-                  <div className={`w-full lg:w-1/2 ${isExpanded ? 'lg:w-3/5' : ''} transition-all duration-500`}>
-                    <div
-                      className="cursor-pointer"
-                      onClick={() => toggleExpand(item.id)}
-                    >
-                      <h2 className="text-2xl font-bold text-gray-800 mb-3 hover:text-green-700 transition-colors">
-                        {item.title}
-                      </h2>
-                      <p className="text-gray-600 mb-4">
-                        {item.description}
-                      </p>
-                    </div>
-
-                    {/* Contenido expandido */}
-                    {isExpanded && (
-                      <div className="mt-4 p-4 bg-green-50 rounded-lg border border-green-100">
-                        <p className="text-gray-700 mb-4">
-                          {item.fullContent}
-                        </p>
-                        <button
+                      {/* Imagen */}
+                      <div className={`w-full lg:w-1/2 ${isExpanded ? 'lg:w-2/5' : ''} transition-all duration-500 relative`}>
+                        <div
+                          className="rounded-xl overflow-hidden shadow-md cursor-pointer transform hover:scale-105 transition-transform duration-300"
                           onClick={() => toggleExpand(item.id)}
-                          className="text-green-600 hover:text-green-800 font-medium flex items-center"
                         >
-                          <span>Leer menos</span>
-                          <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 ml-1" viewBox="0 0 20 20" fill="currentColor">
-                            <path fillRule="evenodd" d="M14.707 12.707a1 1 0 01-1.414 0L10 9.414l-3.293 3.293a1 1 0 01-1.414-1.414l4-4a1 1 0 011.414 0l4 4a1 1 0 010 1.414z" clipRule="evenodd" />
-                          </svg>
-                        </button>
+                          <img
+                            src={item.image}
+                            alt={item.title}
+                            className="w-full h-64 object-cover"
+                          />
+                        </div>
+                        {/* Etiqueta de tipo (Noticia/Consejo) */}
+                        <div className="absolute top-4 left-4">
+                          <span className={`px-3 py-1 rounded-full text-sm font-medium ${item.type === 'noticia' ? 'bg-blue-100 text-blue-800' : 'bg-green-100 text-green-800'}`}>
+                            {item.type === 'noticia' ? 'Noticia' : 'Consejo'}
+                          </span>
+                        </div>
                       </div>
-                    )}
 
-                    {/* Botón para expandir cuando no está expandido */}
-                    {!isExpanded && (
-                      <button
-                        onClick={() => toggleExpand(item.id)}
-                        className="text-green-600 hover:text-green-800 font-medium flex items-center mt-2"
-                      >
-                        <span>Leer más</span>
-                        <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 ml-1" viewBox="0 0 20 20" fill="currentColor">
-                          <path fillRule="evenodd" d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z" clipRule="evenodd" />
-                        </svg>
-                      </button>
-                    )}
-                  </div>
-                </div>
-              );
-            })}
-          </div>
+                      {/* Texto */}
+                      <div className={`w-full lg:w-1/2 ${isExpanded ? 'lg:w-3/5' : ''} transition-all duration-500`}>
+                        <div
+                          className="cursor-pointer"
+                          onClick={() => toggleExpand(item.id)}
+                        >
+                          <h2 className="text-2xl font-bold text-gray-800 mb-3 hover:text-green-700 transition-colors">
+                            {item.title}
+                          </h2>
+                          <p className="text-gray-600 mb-4">
+                            {item.description}
+                          </p>
+                        </div>
+
+                        {/* Contenido expandido */}
+                        {isExpanded && (
+                          <div className="mt-4 p-4 bg-green-50 rounded-lg border border-green-100">
+                            <p className="text-gray-700 mb-4">
+                              {item.fullContent}
+                            </p>
+                            <button
+                              onClick={() => toggleExpand(item.id)}
+                              className="text-green-600 hover:text-green-800 font-medium flex items-center"
+                            >
+                              <span>Leer menos</span>
+                              <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 ml-1" viewBox="0 0 20 20" fill="currentColor">
+                                <path fillRule="evenodd" d="M14.707 12.707a1 1 0 01-1.414 0L10 9.414l-3.293 3.293a1 1 0 01-1.414-1.414l4-4a1 1 0 011.414 0l4 4a1 1 0 010 1.414z" clipRule="evenodd" />
+                              </svg>
+                            </button>
+                          </div>
+                        )}
+
+                        {/* Botón para expandir cuando no está expandido */}
+                        {!isExpanded && (
+                          <button
+                            onClick={() => toggleExpand(item.id)}
+                            className="text-green-600 hover:text-green-800 font-medium flex items-center mt-2"
+                          >
+                            <span>Leer más</span>
+                            <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 ml-1" viewBox="0 0 20 20" fill="currentColor">
+                              <path fillRule="evenodd" d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z" clipRule="evenodd" />
+                            </svg>
+                          </button>
+                        )}
+                      </div>
+                    </div>
+                  );
+                })}
+              </div>
+            </InfiniteScroll>
+          )}
 
           {/* Sección de estadísticas */}
           <div className="mt-16 bg-white rounded-2xl shadow-lg p-8 max-w-4xl mx-auto">

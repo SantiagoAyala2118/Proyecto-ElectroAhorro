@@ -57,22 +57,22 @@ export default function Calculadora() {
 
     // Validaciones rápidas
     if (!Number.isFinite(payload.power) || payload.power <= 0) {
-      setCalcError("Ingresá una potencia válida (>0).");
+      setCalcError("Error: Ingresá una potencia válida (>0).");
       setCalcLoading(false);
       return;
     }
     if (!Number.isFinite(payload.hours_per_day) || payload.hours_per_day <= 0) {
-      setCalcError("Ingresá horas por día válidas (>0).");
+      setCalcError("Error: Ingresá horas por día válidas (>0).");
       setCalcLoading(false);
       return;
     }
     if (!Number.isFinite(payload.days) || payload.days <= 0) {
-      setCalcError("Ingresá días válidos (>0).");
+      setCalcError("Error: Ingresá días válidos (>0).");
       setCalcLoading(false);
       return;
     }
     if (!Number.isFinite(payload.costPerKwh) || payload.costPerKwh < 0) {
-      setCalcError("Ingresá un precio por kWh válido (>=0).");
+      setCalcError("Error: Ingresá un precio por kWh válido (>=0).");
       setCalcLoading(false);
       return;
     }
@@ -86,8 +86,9 @@ export default function Calculadora() {
       });
 
       if (!res.ok) {
-        const txt = await res.text().catch(() => null);
-        setCalcError("Error servidor: " + (txt || res.status));
+        const txt = await res.json().catch(() => null);
+        setCalcError("Error: " + (txt.errors.hours_per_day || res.status));
+        console.log(txt);
         setCalcResult(null);
         setCalcLoading(false);
         return;

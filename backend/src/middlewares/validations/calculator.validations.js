@@ -12,7 +12,9 @@ export const createCalculationValidations = [
     .notEmpty()
     .withMessage("Las horas por día son requeridas")
     .isFloat({ gt: 0, lt: 25 })
-    .withMessage("Las horas por día deben ser números mayores a 0"),
+    .withMessage(
+      "Las horas por día deben ser números mayores a 0 y menores a 24"
+    ),
   body("days")
     .trim()
     .notEmpty()

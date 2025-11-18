@@ -20,10 +20,77 @@ export default function Calculadora() {
     powerUnity: "W",
   });
 
+  // --- Autocomplete appliances ---
+  const appliances = {
+    // keys = value del select
+    ventilador: {
+      power: 75, // potencia en W
+      powerUnity: "W",
+      hours_per_day: 8,
+      days: 247,
+      costPerKwh: 144.32, // podés usar un valor por defecto
+    },
+    fridge: {
+      power: 150, // ejemplo en W
+      powerUnity: "W",
+      hours_per_day: 24,
+      days: 365,
+      costPerKwh: 144.32,
+    },
+    tv: {
+      power: 120,
+      powerUnity: "W",
+      hours_per_day: 4,
+      days: 250,
+      costPerKwh: 144.32,
+    },
+    washer: {
+      power: 500,
+      powerUnity: "W",
+      hours_per_day: 1,
+      days: 60,
+      costPerKwh: 144.32,
+    },
+  };
+
+  const [selectedAppliance, setSelectedAppliance] = useState("");
+
   // --- INICIO PARCHÉ: estado y funciones para mantener estilos intactos ---
   const [calcResult, setCalcResult] = useState(null);
   const [calcLoading, setCalcLoading] = useState(false);
   const [calcError, setCalcError] = useState("");
+
+  const handleApplianceSelect = (e) => {
+    const key = e.target.value;
+    setSelectedAppliance(key);
+
+    if (!key) {
+      // Si querés limpiar el form cuando no hay selección:
+      handleChange({ target: { name: "power", value: "" } });
+      handleChange({ target: { name: "hours_per_day", value: "" } });
+      handleChange({ target: { name: "days", value: "" } });
+      handleChange({ target: { name: "costPerKwh", value: "" } });
+      return;
+    }
+
+    const a = appliances[key];
+    if (!a) return;
+
+    // Si tus campos en stateForm están en W o kW, asegurar unidad:
+    // Aquí asumimos que guardás power y powerUnity por separado.
+    // Sobrescribimos siempre:
+    handleChange({ target: { name: "power", value: String(a.power) } });
+    handleChange({
+      target: { name: "powerUnity", value: a.powerUnity || "W" },
+    });
+    handleChange({
+      target: { name: "hours_per_day", value: String(a.hours_per_day) },
+    });
+    handleChange({ target: { name: "days", value: String(a.days) } });
+    handleChange({
+      target: { name: "costPerKwh", value: String(a.costPerKwh) },
+    });
+  };
 
   // Esta función reemplaza la llamada original getFetch(stateForm)
   // Mantiene también tu handleSubmit (para que haga validaciones locales que ya tengas)
@@ -329,9 +396,11 @@ export default function Calculadora() {
            [background:linear-gradient(white,white)_padding-box,linear-gradient(to_right,#1e3a8a,#b6ff3b)_border-box] 
            hover:[background:linear-gradient(white,white)_padding-box,linear-gradient(to_right,#b6ff3b,#162456)_border-box]"
                   aria-label="Electrodoméstico"
-                  defaultValue=""
+                  value={selectedAppliance}
+                  onChange={handleApplianceSelect}
                 >
                   <option value="">-- Selecciona --</option>
+                  <option value="ventilador">Ventilador</option>
                   <option value="fridge">Nevera</option>
                   <option value="tv">Televisor</option>
                   <option value="washer">Lavarropas</option>

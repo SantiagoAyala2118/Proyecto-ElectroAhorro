@@ -81,7 +81,7 @@ export default function LandingPage() {
           <div className="flex-1">
             {/* Logo / title similar al Login */}
             <h1 className="text-4xl md:text-5xl font-extrabold leading-tight text-lime-300 drop-shadow-md">
-              ElectroAhorro — Ahorra energía, ahorrá dinero
+              ElectroAhorro - Ahorra energía, ahorrá dinero
             </h1>
             <p className="mt-4 text-lg text-white/85">
               Herramientas prácticas para estimar el consumo de tus
@@ -106,7 +106,7 @@ export default function LandingPage() {
             </div>
 
             <p className="mt-4 text-sm text-white/60">
-              Proyecto enfocado en familias de Formosa — fácil, rápido y sin
+              Proyecto enfocado en familias de Formosa - fácil, rápido y sin
               necesidad de equipos especializados.
             </p>
           </div>

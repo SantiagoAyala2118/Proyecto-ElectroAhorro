@@ -20,7 +20,7 @@ export const UserProfile = () => {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
   const [monthlyData, setMonthlyData] = useState([]);
-  const tariff = 13.0; // ARS por kWh
+  const tariff = 144.5; // ARS por kWh
 
   const fetchConsumptionData = async () => {
     try {
@@ -60,7 +60,7 @@ export const UserProfile = () => {
         const data = await res.json();
         setUserData(data.user);
       }
-    } catch (_) { }
+    } catch (_) {}
   };
 
   useEffect(() => {
@@ -132,7 +132,7 @@ export const UserProfile = () => {
         if (res.ok) {
           await fetchConsumptionData();
         }
-      } catch (err) { }
+      } catch (err) {}
     };
 
     runCalculation();
@@ -142,11 +142,7 @@ export const UserProfile = () => {
   const totalApplianceKWh = appliancesList.reduce(
     (acc, apObj) =>
       acc +
-      Number(
-        apObj.Appliance?.consumo_promedio ??
-        apObj.consumo_promedio ??
-        0
-      ),
+      Number(apObj.Appliance?.consumo_promedio ?? apObj.consumo_promedio ?? 0),
     0
   );
 
@@ -211,8 +207,7 @@ export const UserProfile = () => {
         year = new Date().getFullYear();
       }
 
-      if (monthNum < 1 || monthNum > 12)
-        monthNum = new Date().getMonth() + 1;
+      if (monthNum < 1 || monthNum > 12) monthNum = new Date().getMonth() + 1;
 
       const date = new Date(year, monthNum - 1, 1);
       const cost = toNumberSafe(m?.cost, 0);
@@ -311,19 +306,17 @@ export const UserProfile = () => {
       {/* Contenido Principal */}
       <div className="ml-64 flex-1 p-10">
         <div className="max-w-7xl mx-auto">
-
           {/* Header del Perfil */}
           <div className="bg-white rounded-2xl p-8 mb-10 shadow-xl border border-gray-200">
             <div className="flex items-center justify-between">
-
               <div className="flex items-center space-x-6">
                 <div className="w-24 h-24 bg-gradient-to-br from-lime-400 to-blue-950 rounded-full flex items-center justify-center text-white text-3xl font-bold shadow-md">
                   {userData?.name
                     ? userData.name
-                      .split(" ")
-                      .map((n) => n?.[0])
-                      .join("")
-                      .toUpperCase()
+                        .split(" ")
+                        .map((n) => n?.[0])
+                        .join("")
+                        .toUpperCase()
                     : "..."}
                 </div>
 
@@ -350,10 +343,8 @@ export const UserProfile = () => {
 
           {/* Grid Principal */}
           <div className="grid grid-cols-1 xl:grid-cols-3 gap-8">
-
             {/* Columna Izquierda - Estadísticas */}
             <div className="xl:col-span-2 space-y-8">
-
               {/* Resumen CORREGIDO */}
               <div className="bg-white rounded-2xl p-6 shadow-xl border border-gray-200">
                 <h2 className="text-3xl font-extrabold text-blue-950 mb-6 border-b-2 border-lime-400 pb-2">
@@ -395,7 +386,9 @@ export const UserProfile = () => {
                       <CartesianGrid strokeDasharray="3 3" />
                       <XAxis dataKey="month" />
                       <YAxis tickFormatter={(v) => `$${v} ARS`} />
-                      <Tooltip formatter={(value) => [`$${value} ARS`, "Costo"]} />
+                      <Tooltip
+                        formatter={(value) => [`$${value} ARS`, "Costo"]}
+                      />
                       <Line
                         type="monotone"
                         dataKey="cost"
@@ -452,7 +445,6 @@ export const UserProfile = () => {
 
             {/* Columna Derecha */}
             <div className="space-y-8">
-
               {/* Configuración */}
               <div className="bg-white rounded-2xl p-6 shadow-xl border border-gray-200">
                 <h2 className="text-3xl font-extrabold text-blue-950 mb-6 border-b-2 border-lime-400 pb-3">
@@ -504,8 +496,8 @@ export const UserProfile = () => {
                         {(year === 2024
                           ? 29400
                           : year === 2023
-                            ? 31200
-                            : 28500
+                          ? 31200
+                          : 28500
                         ).toLocaleString()}{" "}
                         kWh
                       </span>

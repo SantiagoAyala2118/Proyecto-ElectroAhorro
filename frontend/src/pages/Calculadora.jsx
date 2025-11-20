@@ -220,7 +220,7 @@ export default function Calculadora() {
   // };
 
   return (
-    <div className="min-h-screen w-full bg-cover bg-slate-300 flex flex-col items-center p-0 m-0  inset-0 pt-[6vh]">
+    <div className="min-h-screen w-full bg-cover bg-slate-300 flex flex-col items-center p-0 m-0 pt-[7vh]  inset-0">
       {/* // className="min-h-screen min-w-screen w-screen bg-cover bg-gradient-to-b from-[#eef6ff] to-[#e6eefc] flex flex-col items-center py-12 px-6 m-0 p-0"> */}
       {/* Header con botones de navegación */}
       <header className="w-full max-w-5xl text-center mb-8 mt-20">
